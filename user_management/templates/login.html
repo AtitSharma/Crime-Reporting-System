@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+
+<style>
+  .error-message {
+      color: #ff3860;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+  }
+  .success-message {
+      color: #4CAF50;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+  }
+  .input_box {
+      position: relative;
+      margin-bottom: 15px;
+  }
+  .password-mismatch {
+      border: 1px solid #ff3860 !important;
+  }
+  .flash {
+      cursor: pointer;
+      position: absolute;
+      right: 35px;
+      top: 50%;
+      transform: translateY(-50%);
+  }
+  .input_box input {
+      width: 100%;
+      padding-right: 60px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+  }
+  .messages {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+  }
+  .messages li.error {
+      color: #ff3860;
+      padding: 10px;
+      background: #ffebee;
+      border-radius: 4px;
+      margin-bottom: 10px;
+  }
+  .messages li.success {
+      color:rgb(208, 208, 208);
+      padding: 10px;
+      background:rgb(19, 179, 62);
+      border-radius: 4px;
+      margin-bottom: 10px;
+  }
+</style>
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log In</title>
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"
+    />
+   <link rel="stylesheet" href="{% static 'css/bs_icon.css' %}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="forms">
+        <div class="form_login">
+          <span class="Title">Login</span>
+          <form action="#" method="post">
+            {% csrf_token %}
+            <div class="input_box">
+              <input type="email" name="email" placeholder="Enter your email" required>
+              <i class="uil uil-envelope-alt"></i>
+            </div>
+            <div class="input_box">
+              <input type="password" name="password" placeholder="Enter your password" id="password" required>
+              <i class="uil uil-padlock icon"></i>
+              <i class="uil uil-eye-slash flash" onclick="show()" id="eye"></i>
+              
+            </div>
+            <div class="check_box">
+              <div class="check">
+                <input type="checkbox">
+                <label for="#">Stay logged in</label>
+              </div>
+              <a href="#">Forgot password?</a>
+            </div>
+            <div class="inbox_button">
+              <input type="submit" value="Login" required>
+            </div>
+          </form>
+          <div class="Register_box">
+            <span class="reg">Haven't registered?
+             <a href="{% url 'ums:register' %}" class="Register">register now.</a>
+            </span>
+           </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  function show(){
+    if(document.getElementById("eye").className=="uil uil-eye-slash flash"){
+      document.getElementById("eye").className="uil uil-eye flash"
+      document.getElementById("password").type="text"
+      
+    }
+    else{
+      document.getElementById("eye").className="uil uil-eye-slash flash"
+      document.getElementById("password").type="password"
+    }
+    
+  }
+</script>

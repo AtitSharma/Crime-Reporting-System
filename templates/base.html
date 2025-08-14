@@ -1,0 +1,136 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRS</title>
+    {% block stylesheet %}
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="{% static 'css/bootstrap.min.css' %}"rel="stylesheet" >
+         <link href="{% static 'fonts/css/fontawesome.min.css' %}"rel="stylesheet" >
+        <link href="{% static 'fonts/css/brands.min.css' %}" rel="stylesheet" />
+        <link href="{% static 'fonts/css/solid.min.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/global.css' %}" rel="stylesheet">
+        <link href="{% static 'css/index.css' %}" rel="stylesheet">
+       <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+        <link href="{% static 'css/flag-icons.css' %}" rel="stylesheet">
+    
+    </head>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"
+    />
+    <style>
+        .error-message {
+            color: #ff3860;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .success-message {
+            color: #4CAF50;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .input_box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .password-mismatch {
+            border: 1px solid #ff3860 !important;
+        }
+        .flash {
+            cursor: pointer;
+            position: absolute;
+            right: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .input_box input {
+            width: 100%;
+            padding-right: 60px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .messages li.error {
+            color: #ff3860;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .messages li.success {
+            color:rgb(208, 208, 208);
+            padding: 10px;
+            background:rgb(19, 179, 62);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+      </style>
+    {% endblock stylesheet %}
+</head>
+<body>
+    {% block navbar %}
+        {% include 'navbar.html' %}
+    {% endblock navbar%}
+    <br>
+    <br>
+    <div class="main">
+    {% block main %}
+    <div class="center">
+        {% with request=request %}
+        {% block content %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+         {% endif %}
+
+
+        {% endblock content %}
+        {% endwith %}
+    </div> 
+    {% endblock main%}
+    </div>
+</body>
+{% block script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script>
+
+            function getCSRFToken() {
+                    var cookieValue = null;
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.startsWith('csrftoken=')) {
+                        cookieValue = cookie.substring('csrftoken='.length, cookie.length);
+                        break;
+                    }
+                    }
+                    return cookieValue;
+                }
+
+    </script>
+    {% endblock script %}
+</html>

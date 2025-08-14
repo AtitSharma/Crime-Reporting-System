@@ -1,0 +1,127 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  
+}
+body{
+  background: #f4f4f4;
+}
+/* nav  */
+nav{
+  width: 100%;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #00aeff;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+}
+nav .left{
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+nav .left .logo{
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+}
+nav .left .logo img{
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+nav .left .search_bar{
+  display: flex;
+  align-items: center;
+  width: 300px;
+  height: 40px;
+  background: #efefef;
+  border-radius: 30px;
+  margin-left: 10px;
+
+}
+nav .left .search_bar i{
+  font-size: 24px;
+  margin-left: 10px;
+  color: #757575;
+}
+nav .left .search_bar input{
+  width: 240px;
+  height: 35px;
+  margin-left: 10px;
+  font-size: 20px;
+  font-weight: 500;
+  border: none;
+  outline: none;
+  background: #efefef;
+  color: #757575;
+}
+nav .mid{
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  column-gap: 3px;
+  margin-right: 150px;
+}
+nav .mid a{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  width: 120px;
+  height: 50px;
+  border-radius: 7px;
+  background: #00aeff;
+}
+nav .mid a:hover{
+  transition: all ease .2s;
+  color: black;
+  background: #efefef;
+}
+
+nav .right{
+  display: flex;
+  align-items: center;
+}
+nav .right .icons{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 15px;
+}
+nav .right .icons a{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #000;
+  background: white;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+}
+nav .right .icons a:hover{
+  background: #d3d3d3;
+}
+nav .right .right_logo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3px;
+  margin-right: 20px;
+}
+nav .right .right_logo img{
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+/* nav  */
+
+/*        main         */

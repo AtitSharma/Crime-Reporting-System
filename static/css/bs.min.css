@@ -1,0 +1,372 @@
+main{
+  display: flex;
+  margin-top: 60px;
+  background: #f5f5f5;
+}
+
+.main .left{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 25%;
+  height: 92vh;
+  overflow: hidden;
+  overflow-y: scroll;
+  background: #f5f5f5;
+  /* box-shadow: 0px 0px 5px #c3c3c3; */
+  position: fixed;
+  border-radius: 13px;
+  padding-top: 25px;
+  margin-left: 10px;
+}
+.main .left::-webkit-scrollbar{
+  width: 10px;   
+  border-radius: 20px;
+}
+.main .left:hover::-webkit-scrollbar{
+  background: #efefef;
+}
+.main .left::-webkit-scrollbar-thumb{
+  border-radius: 20px;
+}
+.main .left:hover::-webkit-scrollbar-thumb{
+  background: #c3c3c3;
+}
+
+.main .left a{
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: #000;
+  height: 60px;
+  background: #f5f5f5;
+  width: 95%;
+  margin-left: 15px;
+  border-radius: 7px;
+  
+}
+.main .left a:hover{
+  transition: all ease .5s;
+  border-radius: 10px;
+  background:#cccccc;
+}
+.main .left a i{
+  margin-left: 25px;
+  font-size: 30px;
+  /* align-self: baseline; */
+}
+.main .left a span{
+  font-size: 17px;
+  font-weight: bold;
+  margin-left: 30px;
+}
+.main .left .UserImg_cont img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  margin-left: 20px;
+}
+.main .left .UserImg_cont span{
+  margin-left: 15px;
+}
+
+/*       center          */
+.center{
+  margin-top: 20px;
+  width: 40%;
+  height: auto;
+  margin-left: 30%;
+  background: #f5f5f5;
+}
+
+.center::-webkit-scrollbar{
+  width: 0;
+}
+.center .Create{
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border-radius: 7px;
+  padding: 10px 15px;
+  box-shadow: 0 1px 8px #00000033;   
+}
+.center .create_post{
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+.center .create_post a{
+  text-decoration: none;
+  color: #757575;
+}
+.center .create_post i{
+  margin-left: 15px;
+}
+.center .create_post img{
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+
+}
+.center .create_post .inputSection{
+  margin-left: 10px;
+  background: #efefef;
+  width: 85%;
+  border-radius: 30px;
+
+}
+.center .create_post input{
+  width: 85%;
+  padding: 10px;
+  margin-left: 20px;
+  border: none;
+  outline: none;
+  background: #efefef;
+  border-radius: 30px;
+  font-size: 17px;
+}
+.center .create_post .input:hover{
+  cursor: pointer;
+  
+}
+.center .create_post .Submit{
+  cursor: pointer;
+  background: #efefef;
+  width: 20%;
+}
+hr{
+  color: #cccccc;
+  margin-top: 15px;
+}
+.center .Create .creat_icon{
+  display: flex;
+  justify-content: space-between;
+  margin-top:10px;
+}
+.center .Create .creat_icon span{
+  font-size: 15px;
+}
+.center .Create .creat_icon a{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #4e4a4a;
+  /* background: red; */
+  border-radius: 8px;
+  width: 200px;
+  height: 40px;
+  padding: 0px 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  font-weight: 500;
+}
+.center .Create .creat_icon a:hover{
+  background: #efefef;
+}
+.center .Create .creat_icon i{
+  font-size: 24px;
+  margin-right: 10px;
+}
+.center .Create .creat_icon .live i{
+  color: red;
+}
+.center .Create .creat_icon .P_V i{
+  color: green;
+}
+.center .Create .creat_icon .Smile i{
+  color: yellow;
+}
+.center .Posts{
+  margin: 20px 0px;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border-radius: 7px;
+  padding: 10px 15px;
+  box-shadow: 0 1px 8px #00000033;  
+}
+.center .Posts .upper_post{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.center .Posts .upper_post img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  margin-right: 8px;
+  cursor: pointer;
+}
+.center .Posts .upper_post .img_name{
+  display: flex;
+  align-items: center;
+}
+.center .Posts .upper_post .img_name .Details .UserName{
+font-weight: bold;
+}
+.center .Posts .upper_post .img_name .Details .UserName:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+.center .Posts .upper_post .img_name .Details .time{
+  font-size: 13px;
+  color: #919191;
+  margin-left: 3px 0px;
+  cursor: pointer;
+}
+.center .Posts .upper_post .img_name .Details .time i{
+  font-size: 10px;
+  margin-left: 3px;
+  
+}
+.center .Posts .upper_post .menu{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+.center .Posts .upper_post .menu:hover{
+  background: #efefef;
+  cursor: pointer;
+}
+.center .Posts .upper_post .menu i{
+  font-size: 18px;
+  line-height: 35px;
+} 
+.center .Posts a{
+  text-decoration: none;
+  color: #000;
+}
+.center .Posts .dsc p{
+  margin-bottom: 15px;
+}
+.center .Posts img{
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 5px;
+}
+.center .Posts .actions{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.center .Posts .actions .react{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 200px;
+  border-radius: 7px;
+  margin-top: 7px;
+  margin-bottom: -8px;
+}
+.center .Posts .actions .react:hover{
+  background: #efefef;
+}
+.center .Posts .actions .react i{
+  font-size: 20px;
+  color: #4e4a4a;
+  
+}
+.center .Posts .actions .react p{
+  margin-left: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #4e4a4a;
+}
+.center .Posts .comment_section{
+  display: flex;
+  align-items: center;
+  margin: 25px 5px 7px;
+  margin-left: 10px;
+  margin-bottom: 20px;
+
+}
+.center .Posts .comment_section .comment_Sub{
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+  background: #efefef;
+  width: 85%;
+  border-radius: 30px;
+
+}
+.center .Posts .comment_section .comment_Sub a{
+  font-size: 15px;
+  text-decoration: none;
+  margin-right: 15px;
+  color: #757575;
+}
+.center .Posts .comment_section img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+}
+.center .Posts .comment_section .comment_Sub input{
+ width:100%;
+  padding: 10px;
+  margin-left: 20px;
+  border: none;
+  outline: none;
+  background: #efefef;
+  /* border-radius: 30px; */
+  font-size: 19px;
+}
+.center .Posts .comment_section .comment_Sub input:hover{
+  cursor: pointer;
+}
+
+.center .Posts .commented{
+  background: #efefef;
+  height: auto;
+  width: 60%;
+  border-radius: 13px;
+  margin-left: 30px;
+  margin-top: 15px;
+}
+
+.center .Posts .commented .commenter{
+  display: flex;
+  align-items: center;
+  
+  
+}
+.center .Posts .commenter img{
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;  
+  margin-left: 5px;
+  margin-top: 5px; 
+}
+.center .Posts .commented .commenter .commented_com p{
+  margin-left:10px;
+  margin-bottom: 7px;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.center .Posts .commented .commenter .commented_com i{
+  font-size: 12px;
+  margin-left: 5px;
+  color: #757575;
+}
+.center .Posts .commented .comment_body{
+  margin: 5px 0px 5px 5px;
+}
+
