@@ -1,6 +1,6 @@
 from django.urls import path
 
-from report.views import ContactDetailsView, HomePageView, MyReportsView, ReportCrimeView,ReportCrimeDetailView,ReportCrimeUpdateView
+from report.views import ContactDetailsView, HomePageView, MyReportsView, ReportCrimeView,ReportCrimeDetailView,ReportCrimeUpdateView,analytics_api
 
 app_name = "report"
 
@@ -12,5 +12,6 @@ urlpatterns = [
     path("reports/delete/<int:id>/",ReportCrimeDetailView.as_view(),name="report-detail"),
     path("reports/update/<int:id>/",ReportCrimeUpdateView.as_view(),name="report-detail-update"),
     path("contact-details/",ContactDetailsView.as_view(),name="contact-details"),
-    path("my-report/<str:phone_number>/<str:email>/",MyReportsView.as_view(),name="my-report")
+    path("my-report/<str:phone_number>/<str:email>/",MyReportsView.as_view(),name="my-report"),
+    path("analytics-data/", analytics_api, name="analytics-api"),
 ]

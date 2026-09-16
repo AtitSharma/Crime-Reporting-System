@@ -1,0 +1,563 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}CRS Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+    html, body {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    #content {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    #content h1 {
+        display: none !important;
+    }
+
+    .crs-analytics {
+        padding: 12px 16px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Stat Cards */
+    .stat-cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 10px 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .stat-card .stat-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #111827;
+        line-height: 1;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.6rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 1px;
+    }
+
+    .stat-icon.total { background: rgba(75,14,11,0.1); color: #4B0E0B; }
+    .stat-icon.pending { background: rgba(245,158,11,0.1); color: #d97706; }
+    .stat-icon.investigating { background: rgba(59,130,246,0.1); color: #2563eb; }
+    .stat-icon.resolved { background: rgba(34,197,94,0.1); color: #16a34a; }
+
+    /* Filter Bar */
+    .filter-bar {
+        background: #fff;
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .filter-row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+    }
+
+    .filter-group {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .filter-group.date-group {
+        flex: 1.8;
+    }
+
+    .filter-group label {
+        display: block;
+        font-size: 0.6rem;
+        font-weight: 600;
+        color: #4b5563;
+        margin-bottom: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        width: 100%;
+        padding: 6px 8px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 5px;
+        font-size: 0.78rem;
+        color: #111827;
+        background: #fafafa;
+        outline: none;
+        transition: all 0.2s;
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+        border-color: #8B4513;
+        background: #fff;
+        box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.08);
+    }
+
+    /* Date Range */
+    .date-range {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .date-range input {
+        flex: 1;
+        min-width: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .date-range .date-sep {
+        color: #9ca3af;
+        font-size: 0.7rem;
+        flex-shrink: 0;
+        pointer-events: none;
+        position: relative;
+        z-index: 0;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    .filter-btn {
+        padding: 6px 12px;
+        background: linear-gradient(135deg, #4B0E0B 0%, #8B4513 100%);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(75, 14, 11, 0.3);
+    }
+
+    .filter-clear {
+        padding: 6px 10px;
+        background: #f3f4f6;
+        color: #6b7280;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 5px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .filter-clear:hover { background: #e5e7eb; color: #374151; }
+
+    /* Charts - 3 columns */
+    .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .chart-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 10px 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .chart-card.wide {
+        grid-column: span 2;
+    }
+
+    .chart-card h3 {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0 0 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .chart-card h3 i { color: #4B0E0B; font-size: 0.7rem; }
+
+    .chart-container {
+        position: relative;
+        height: 160px;
+    }
+
+    .chart-card.wide .chart-container {
+        height: 160px;
+    }
+
+    /* Bottom row - 2 charts + table */
+    .bottom-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr;
+        gap: 10px;
+    }
+
+    /* Recent Table */
+    .recent-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 10px 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .recent-card h3 {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0 0 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .recent-card h3 i { color: #4B0E0B; font-size: 0.7rem; }
+
+    .recent-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .recent-table th {
+        text-align: left;
+        padding: 4px 6px;
+        font-size: 0.6rem;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border-bottom: 1.5px solid #f3f4f6;
+    }
+
+    .recent-table td {
+        padding: 5px 6px;
+        font-size: 0.7rem;
+        color: #374151;
+        border-bottom: 1px solid #f9fafb;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+    }
+
+    .recent-table tr:hover td { background: #faf6f1; }
+
+    .status-badge {
+        display: inline-flex;
+        padding: 1px 6px;
+        border-radius: 10px;
+        font-size: 0.55rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-investigating { background: #dbeafe; color: #1e40af; }
+    .status-action_taken { background: #dcfce7; color: #166534; }
+
+    /* Responsive */
+    @media (max-width: 1199px) {
+        .chart-grid { grid-template-columns: 1fr 1fr; }
+        .chart-card.wide { grid-column: span 2; }
+        .bottom-row { grid-template-columns: 1fr 1fr; }
+        .bottom-row .recent-card { grid-column: span 2; }
+    }
+
+    @media (max-width: 991px) {
+        .stat-cards { grid-template-columns: repeat(2, 1fr); }
+        .chart-grid { grid-template-columns: 1fr; }
+        .chart-card.wide { grid-column: span 1; }
+        .bottom-row { grid-template-columns: 1fr; }
+        .bottom-row .recent-card { grid-column: span 1; }
+    }
+
+    @media (max-width: 575px) {
+        .crs-analytics { padding: 8px; }
+        .stat-cards { grid-template-columns: 1fr 1fr; gap: 6px; }
+        .stat-card { padding: 8px; gap: 6px; }
+        .stat-card .stat-icon { width: 28px; height: 28px; font-size: 0.7rem; }
+        .stat-card .stat-value { font-size: 1rem; }
+        .filter-row { flex-wrap: wrap; }
+        .filter-group { min-width: 45%; }
+        .filter-group.date-group { min-width: 100%; }
+        .chart-container { height: 140px; }
+    }
+</style>
+{% endblock extrastyle %}
+
+{% block content %}
+<div class="crs-analytics">
+    <div class="stat-cards">
+        <div class="stat-card">
+            <div class="stat-icon total"><i class="fas fa-file-alt"></i></div>
+            <div>
+                <div class="stat-value" id="statTotal">-</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon pending"><i class="fas fa-clock"></i></div>
+            <div>
+                <div class="stat-value" id="statPending">-</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon investigating"><i class="fas fa-search"></i></div>
+            <div>
+                <div class="stat-value" id="statInvestigating">-</div>
+                <div class="stat-label">Investigating</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon resolved"><i class="fas fa-check-circle"></i></div>
+            <div>
+                <div class="stat-value" id="statActionTaken">-</div>
+                <div class="stat-label">Action Taken</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <div class="filter-row">
+            <div class="filter-group date-group">
+                <label>Date Range</label>
+                <div class="date-range">
+                    <input type="date" id="filterDateFrom">
+                    <span class="date-sep">to</span>
+                    <input type="date" id="filterDateTo">
+                </div>
+            </div>
+            <div class="filter-group">
+                <label>Station</label>
+                <select id="filterStation">
+                    <option value="">All</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Status</label>
+                <select id="filterStatus">
+                    <option value="">All</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="INVESTIGATING">Investigating</option>
+                    <option value="ACTION_TAKEN">Action Taken</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button class="filter-btn" onclick="applyFilters()"><i class="fas fa-search"></i></button>
+                <button class="filter-clear" onclick="clearFilters()"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-card wide">
+            <h3><i class="fas fa-chart-bar"></i> Station wise</h3>
+            <div class="chart-container"><canvas id="stationChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <h3><i class="fas fa-chart-pie"></i> Status</h3>
+            <div class="chart-container"><canvas id="statusChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="bottom-row">
+        <div class="chart-card">
+            <h3><i class="fas fa-lock"></i> Private vs Public</h3>
+            <div class="chart-container"><canvas id="privacyChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <h3><i class="fas fa-calendar-week"></i> Day wise</h3>
+            <div class="chart-container"><canvas id="weekdayChart"></canvas></div>
+        </div>
+        <div class="recent-card">
+            <h3><i class="fas fa-list"></i> Recent Reports</h3>
+            <table class="recent-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Station</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="recentTableBody">
+                    <tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:12px;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+const COLORS = {
+    primary: '#4B0E0B',
+    palette: [
+        'rgba(75,14,11,0.85)', 'rgba(139,69,19,0.85)', 'rgba(107,35,24,0.85)',
+        'rgba(210,105,30,0.85)', 'rgba(160,82,45,0.85)', 'rgba(128,0,0,0.85)',
+        'rgba(178,34,34,0.85)', 'rgba(205,92,92,0.85)'
+    ],
+    status: { PENDING: '#f59e0b', INVESTIGATING: '#3b82f6', ACTION_TAKEN: '#22c55e' }
+};
+
+let stationChart, statusChart, weekdayChart, privacyChart;
+
+function initCharts() {
+    Chart.defaults.font.family = "'Segoe UI', Roboto, sans-serif";
+    Chart.defaults.font.size = 10;
+    Chart.defaults.color = '#6b7280';
+
+    stationChart = new Chart(document.getElementById('stationChart'), {
+        type: 'bar',
+        data: { labels: [], datasets: [{ label: 'Reports', data: [], backgroundColor: COLORS.palette, borderRadius: 4, borderSkipped: false }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { font: { size: 9 } } }, x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 45 } } } }
+    });
+
+    statusChart = new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderWidth: 0, hoverOffset: 3 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 8, usePointStyle: true, pointStyle: 'circle', font: { size: 9 } } } }, cutout: '55%' }
+    });
+
+    weekdayChart = new Chart(document.getElementById('weekdayChart'), {
+        type: 'radar',
+        data: { labels: [], datasets: [{ label: 'Reports', data: [], backgroundColor: 'rgba(75,14,11,0.15)', borderColor: COLORS.primary, borderWidth: 2, pointBackgroundColor: COLORS.primary, pointRadius: 2 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, grid: { color: '#f3f4f6' }, pointLabels: { font: { size: 9 } }, ticks: { display: false } } } }
+    });
+
+    privacyChart = new Chart(document.getElementById('privacyChart'), {
+        type: 'polarArea',
+        data: { labels: ['Private', 'Public'], datasets: [{ data: [], backgroundColor: ['rgba(75,14,11,0.7)', 'rgba(139,69,19,0.7)'], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 8, usePointStyle: true, pointStyle: 'circle', font: { size: 9 } } } }, scales: { r: { display: false } } }
+    });
+}
+
+function buildUrl() {
+    const params = new URLSearchParams();
+    const dateFrom = document.getElementById('filterDateFrom').value;
+    const dateTo = document.getElementById('filterDateTo').value;
+    const station = document.getElementById('filterStation').value;
+    const status = document.getElementById('filterStatus').value;
+    if (dateFrom) params.set('date_from', dateFrom);
+    if (dateTo) params.set('date_to', dateTo);
+    if (station) params.set('station', station);
+    if (status) params.set('status', status);
+    const query = params.toString();
+    return '/analytics-data/' + (query ? '?' + query : '');
+}
+
+function applyFilters() { loadData(buildUrl()); }
+
+function clearFilters() {
+    document.getElementById('filterDateFrom').value = '';
+    document.getElementById('filterDateTo').value = '';
+    document.getElementById('filterStation').value = '';
+    document.getElementById('filterStatus').value = '';
+    loadData(buildUrl());
+}
+
+function loadData(url) {
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('statTotal').textContent = data.total;
+            document.getElementById('statPending').textContent = data.pending;
+            document.getElementById('statInvestigating').textContent = data.investigating;
+            document.getElementById('statActionTaken').textContent = data.action_taken;
+
+            var stationSelect = document.getElementById('filterStation');
+            if (stationSelect.options.length <= 1 && data.station_wise.length > 0) {
+                data.station_wise.forEach(function(s) {
+                    var opt = document.createElement('option');
+                    opt.value = s.name;
+                    opt.textContent = s.name;
+                    stationSelect.appendChild(opt);
+                });
+            }
+
+            stationChart.data.labels = data.station_wise.map(s => s.name);
+            stationChart.data.datasets[0].data = data.station_wise.map(s => s.count);
+            stationChart.update();
+
+            statusChart.data.labels = data.status_wise.map(s => s.status.replace('_', ' '));
+            statusChart.data.datasets[0].data = data.status_wise.map(s => s.count);
+            statusChart.data.datasets[0].backgroundColor = data.status_wise.map(s => COLORS.status[s.status] || '#9ca3af');
+            statusChart.update();
+
+            weekdayChart.data.labels = data.weekday_wise.map(w => w.day);
+            weekdayChart.data.datasets[0].data = data.weekday_wise.map(w => w.count);
+            weekdayChart.update();
+
+            privacyChart.data.datasets[0].data = [data.private_count, data.public_count];
+            privacyChart.update();
+
+            var tbody = document.getElementById('recentTableBody');
+            if (data.recent_reports.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:12px;">No reports</td></tr>';
+            } else {
+                tbody.innerHTML = data.recent_reports.slice(0, 5).map(function(r) {
+                    return '<tr>' +
+                        '<td><strong>' + (r.title || '-') + '</strong></td>' +
+                        '<td>' + (r.report_taken_by_station__name || '-') + '</td>' +
+                        '<td><span class="status-badge status-' + r.status.toLowerCase() + '">' + r.status.replace('_', ' ') + '</span></td>' +
+                        '</tr>';
+                }).join('');
+            }
+        })
+        .catch(function(err) { console.error('Analytics load failed:', err); });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initCharts();
+    loadData(buildUrl());
+});
+</script>
+{% endblock content %}
