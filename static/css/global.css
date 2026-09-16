@@ -7,22 +7,22 @@ Licence: <a href="https://www.templateonweb.com/license">Website Template Licenc
 */
 
 :root {
-   --blue: #f81c1c;
-   --blue_dark:#0398dc;
+   --blue: #8B4513;
+   --blue_dark:#4B0E0B;
    --black: #000;
-   --border_light: #f1bdbd;
-   --bg_light:#f7e5e5;
-   --light_blue:#f7e5e5;
+   --border_light: #d4a574;
+   --bg_light:#f5ebe0;
+   --light_blue:#f5ebe0;
    --bg_back:#0000006e;
    --border_dark: #2a2929;
-   --blue_light: #27b8f9;
-   --header-link-blue: #e7c6c6;
-   --orange:#f81c1c;
-   --orange_dark:#4b0a56;
-   --orange_light:#43054d;
-   --border_orange :#f1bdbd;
-   --border_orange_light :#f1bdbd;
-   --border_orange_dark:#971010;
+   --blue_light: #a0724a;
+   --header-link-blue: #f5ebe0;
+   --orange:#8B4513;
+   --orange_dark:#4B0E0B;
+   --orange_light:#6B2318;
+   --border_orange :#d4a574;
+   --border_orange_light :#d4a574;
+   --border_orange_dark:#4B0E0B;
 }
 
 body{
@@ -252,18 +252,6 @@ margin-top:0px!important;
 }
 
 
-.offcanvas-body{
-	    background-color: var(--orange_dark);
-}
-.offcanvas-header {
-		padding: 0px 1rem;
-		 background-color: var(--orange_dark);
-		 border-bottom:1px solid var(--border_orange_dark);
-	}
-.offcanvas-header a{
-		color:var(--bs-white);
-	}
-
 
 .dropdown-menu{border:none;border-radius:.5rem;box-shadow:var(--bs-box-shadow);line-height:1.5rem;padding-bottom:1rem 0;z-index:1021}
 .dropdown-header{color:var(--bs-gray-800);font-size:1rem;font-weight:700;letter-spacing:1px;padding:.25rem 1.5rem;text-transform:uppercase}
@@ -370,10 +358,7 @@ font-size:14px;
 font-weight:normal; 
 color:var(--black)!important;
  }
- 
-.offcanvas  .nav-link{
-color:var(--bs-white);
-}
+
 /*****************  header_end *****************/
 
 
@@ -690,9 +675,6 @@ min-height:auto;
 			margin-left: auto !important;
 	}
 
-.offcanvas .offcanvas-body .nav-link{
-	font-size: 14px;
-}
 
  .navbar .navbar-nav .dropdown-menu .dropend .dropdown-menu a{padding-left: 15%;}
  

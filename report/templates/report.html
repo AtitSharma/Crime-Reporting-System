@@ -1,69 +1,570 @@
-{% include "base.html" %}
+{% extends "base.html" %}
 {% load static %}
 
-{% block content %}
-
-<div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 500px; margin: 30px auto; padding: 25px; background: linear-gradient(145deg, #f5f7fa 0%, #e4e8eb 100%); border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-    <form style="display: flex; flex-direction: column; gap: 15px;" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <!-- Removed manual hidden inputs here -->
-
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-            {% for field in form %}
-            <div style="display: flex; flex-direction: column; gap: 5px;">
-                <label for="{{ field.id_for_label }}" style="font-weight: 600; color: #2d3748; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
-                    {{ field.label }}
-                </label>
-                {{ field }}
-                {% if field.help_text %}
-                <small style="font-size: 12px; color: #718096; margin-top: 2px;">{{ field.help_text }}</small>
-                {% endif %}
-                {% for error in field.errors %}
-                <div style="color: #e53e3e; font-size: 12px; margin-top: 2px;">{{ error }}</div>
-                {% endfor %}
-            </div>
-            {% endfor %}
-        </div>
-        <button type="submit" style="background: linear-gradient(to right, #4b0a56, #7c3aed); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 10px; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);">
-            Submit
-        </button>
-    </form>
-</div>
-
+{% block stylesheet %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-    /* This will style all form inputs */
-    input, textarea, select {
-        padding: 10px 12px;
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        font-size: 14px;
-        transition: all 0.2s;
-        background-color: white;
+    .report-page {
+        min-height: calc(100vh - 60px);
+        display: flex;
+        background: #f3f4f6;
     }
-    
-    input:focus, textarea:focus, select:focus {
+
+    /* Left Panel */
+    .report-left {
+        flex: 0 0 40%;
+        background: linear-gradient(135deg, #1a0504 0%, #2A0806 40%, #4B0E0B 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .report-left::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 70%, rgba(139, 69, 19, 0.15) 0%, transparent 50%);
+    }
+
+    .report-left::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        right: -30%;
+        width: 60%;
+        height: 60%;
+        background: radial-gradient(circle, rgba(139, 69, 19, 0.1) 0%, transparent 70%);
+    }
+
+    .logo-container {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo-container img {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+    }
+
+    .quote-section {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        max-width: 340px;
+    }
+
+    .quote-section .quote-icon {
+        font-size: 2rem;
+        color: rgba(139, 69, 19, 0.5);
+        margin-bottom: 16px;
+    }
+
+    .quote-section blockquote {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.7;
+        font-style: italic;
+        margin: 0 0 20px;
+        font-weight: 300;
+    }
+
+    .quote-section .quote-author {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .brand-badge {
+        position: relative;
+        z-index: 1;
+        margin-top: 40px;
+        padding: 12px 24px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 30px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    /* Right Panel */
+    .report-right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 24px;
+        overflow-y: auto;
+    }
+
+    .report-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 520px;
+        overflow: hidden;
+    }
+
+    .report-card-header {
+        padding: 32px 32px 0;
+    }
+
+    .report-card-header h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 6px;
+    }
+
+    .report-card-header p {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .report-body {
+        padding: 24px 32px 32px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #4b5563;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper i.field-icon {
+        position: absolute;
+        left: 14px;
+        top: 14px;
+        color: #9ca3af;
+        font-size: 0.85rem;
+        pointer-events: none;
+        transition: color 0.2s;
+    }
+
+    .input-wrapper textarea ~ i.field-icon {
+        top: 14px;
+    }
+
+    .input-wrapper input:focus ~ i.field-icon,
+    .input-wrapper textarea:focus ~ i.field-icon,
+    .input-wrapper select:focus ~ i.field-icon {
+        color: #8B4513;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="tel"],
+    .form-group input[type="datetime-local"],
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 11px 14px 11px 40px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: #111827;
+        background: #fafafa;
+        transition: all 0.2s ease;
         outline: none;
-        border-color: #a0aec0;
-        box-shadow: 0 0 0 3px rgba(164, 202, 254, 0.45);
+        font-family: inherit;
     }
-    
-    button:hover {
+
+    .form-group textarea {
+        padding-top: 12px;
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        border-color: #8B4513;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.08);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: #b0b8c4;
+    }
+
+    .form-group select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 40px;
+        cursor: pointer;
+    }
+
+    /* File input */
+    .file-input-wrapper {
+        position: relative;
+    }
+
+    .file-input-wrapper input[type="file"] {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px dashed #d1d5db;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        color: #6b7280;
+        background: #fafafa;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .file-input-wrapper input[type="file"]:hover {
+        border-color: #8B4513;
+        background: #fff;
+    }
+
+    /* Checkbox */
+    .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #8B4513;
+        cursor: pointer;
+    }
+
+    .checkbox-wrapper label {
+        font-size: 0.88rem;
+        color: #4b5563;
+        cursor: pointer;
+        margin: 0;
+        text-transform: none;
+        letter-spacing: 0;
+        font-weight: 500;
+    }
+
+    .checkbox-help {
+        font-size: 0.78rem;
+        color: #9ca3af;
+        margin-top: 2px;
+        padding-left: 28px;
+    }
+
+    .field-error {
+        color: #dc2626;
+        font-size: 0.75rem;
+        margin-top: 4px;
+    }
+
+    .field-success {
+        color: #16a34a;
+        font-size: 0.75rem;
+        margin-top: 4px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 13px;
+        background: linear-gradient(135deg, #4B0E0B 0%, #8B4513 100%);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-submit:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3);
+        box-shadow: 0 6px 20px rgba(75, 14, 11, 0.3);
     }
-    
-    button:active {
+
+    .btn-submit:active {
         transform: translateY(0);
     }
-</style>
 
-<!-- JavaScript to get user location -->
+    .report-footer {
+        text-align: center;
+        padding-top: 4px;
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+
+    .report-footer a {
+        color: #8B4513;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .report-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .messages-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+    }
+
+    .messages-list li {
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        font-size: 0.82rem;
+    }
+
+    .messages-list li.error {
+        color: #991b1b;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+    }
+
+    .messages-list li.success {
+        color: #166534;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+        .report-page {
+            flex-direction: column;
+        }
+
+        .report-left {
+            flex: none;
+            padding: 40px 24px 30px;
+        }
+
+        .logo-container img {
+            width: 140px;
+            height: 140px;
+        }
+
+        .quote-section blockquote {
+            font-size: 1rem;
+        }
+
+        .brand-badge {
+            margin-top: 24px;
+        }
+
+        .report-right {
+            padding: 24px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .report-left {
+            padding: 30px 20px 24px;
+        }
+
+        .logo-container img {
+            width: 110px;
+            height: 110px;
+        }
+
+        .report-body {
+            padding: 20px;
+        }
+
+        .report-card-header {
+            padding: 24px 20px 0;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock stylesheet %}
+
+{% block main %}
+<div class="report-page">
+    <div class="report-left">
+        <div class="logo-container">
+            <img src="{% static 'image/title.jpeg' %}" alt="CRS Logo">
+        </div>
+        <div class="quote-section">
+            <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+            <blockquote>
+                Justice delayed is justice denied — report it, track it, resolve it.
+            </blockquote>
+            <div class="quote-author">William E. Gladstone</div>
+        </div>
+        <div class="brand-badge">
+            <i class="fas fa-shield-halved"></i> Crime Reporting System
+        </div>
+    </div>
+
+    <div class="report-right">
+        <div class="report-card">
+            <div class="report-card-header">
+                <h2><i class="fas fa-plus-circle" style="color: #8B4513;"></i> Report a Crime</h2>
+                <p>Fill in the details below to submit your report</p>
+            </div>
+
+            <div class="report-body">
+                {% if messages %}
+                <ul class="messages-list">
+                    {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data" id="reportForm" novalidate>
+                    {% csrf_token %}
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="id_name">Name</label>
+                            <div class="input-wrapper">
+                                {{ form.name }}
+                                <i class="fas fa-user field-icon"></i>
+                            </div>
+                            {% for error in form.name.errors %}
+                                <div class="field-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_email">Email</label>
+                            <div class="input-wrapper">
+                                {{ form.email }}
+                                <i class="fas fa-envelope field-icon"></i>
+                            </div>
+                            {% for error in form.email.errors %}
+                                <div class="field-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="id_phone_number">Phone Number</label>
+                            <div class="input-wrapper">
+                                {{ form.phone_number }}
+                                <i class="fas fa-phone field-icon"></i>
+                            </div>
+                            {% for error in form.phone_number.errors %}
+                                <div class="field-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_crime_datetime">Incident Date & Time</label>
+                            <div class="input-wrapper">
+                                {{ form.crime_datetime }}
+                                <i class="fas fa-calendar-alt field-icon"></i>
+                            </div>
+                            {% for error in form.crime_datetime.errors %}
+                                <div class="field-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_title">Report Title</label>
+                        <div class="input-wrapper">
+                            {{ form.title }}
+                            <i class="fas fa-heading field-icon"></i>
+                        </div>
+                        {% for error in form.title.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_description">Description</label>
+                        <div class="input-wrapper">
+                            {{ form.description }}
+                            <i class="fas fa-align-left field-icon"></i>
+                        </div>
+                        {% for error in form.description.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_proof_documents">Proof Document</label>
+                        <div class="file-input-wrapper">
+                            {{ form.proof_documents }}
+                        </div>
+                        {% for error in form.proof_documents.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-wrapper">
+                            {{ form.is_private }}
+                            <label for="id_is_private">{{ form.is_private.label }}</label>
+                        </div>
+                        {% if form.is_private.help_text %}
+                            <div class="checkbox-help">{{ form.is_private.help_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    {{ form.latitude }}
+                    {{ form.longitude }}
+
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Submit Report
+                    </button>
+                </form>
+
+                <div class="report-footer" style="margin-top: 20px;">
+                    <a href="{% url 'report:home_page' %}"><i class="fas fa-arrow-left"></i> Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}
+
+{% block script %}
 <script>
     window.onload = function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
-                // Find latitude and longitude inputs rendered by the form
                 const latField = document.querySelector('input[name="latitude"]');
                 const lonField = document.querySelector('input[name="longitude"]');
                 if (latField) latField.value = position.coords.latitude;
@@ -76,5 +577,4 @@
         }
     };
 </script>
-
-{% endblock content %}
+{% endblock script %}

@@ -18,7 +18,9 @@ class HomePageView(View):
 
     def get(self,request,*args,**kwargs):
         query = self.get_queryset()
-        context = {"crime_reports":query}
+        context = {
+            "crime_reports": query,
+        }
         return render(request,"home.html",context=context)
 
 

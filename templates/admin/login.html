@@ -1,0 +1,671 @@
+{% extends "admin/login.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+    /* Hide Django admin default styles */
+    #header, #container, #branding, #user-tools, #footer,
+    body.login, #content, .breadcrumbs, .messagelist, #content-main {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        position: static !important;
+    }
+
+    body.login {
+        margin: 0;
+        padding: 0;
+        background: #f3f4f6;
+    }
+
+    #header, #branding, #user-tools, .breadcrumbs, #footer, .messagelist {
+        display: none !important;
+    }
+
+    /* Navbar */
+    .crs-navbar {
+        background: linear-gradient(135deg, #2A0806 0%, #4B0E0B 100%);
+        padding: 0;
+        position: sticky;
+        top: 0;
+        z-index: 1030;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    .crs-navbar .container-xl {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .crs-navbar .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.25rem;
+        padding: 12px 0;
+        text-decoration: none;
+    }
+
+    .crs-navbar .navbar-brand:hover {
+        color: #e9d5ff;
+    }
+
+    .crs-navbar .navbar-brand i {
+        font-size: 1.4rem;
+    }
+
+    .crs-navbar .navbar-brand span {
+        font-size: 0.7rem;
+        font-weight: 400;
+        opacity: 0.8;
+        display: block;
+        line-height: 1;
+    }
+
+    .crs-navbar .nav-link {
+        color: rgba(255,255,255,0.85);
+        font-weight: 500;
+        font-size: 0.9rem;
+        padding: 10px 16px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        text-decoration: none;
+    }
+
+    .crs-navbar .nav-link:hover,
+    .crs-navbar .nav-link.active {
+        color: #fff;
+        background: rgba(255,255,255,0.12);
+    }
+
+    .crs-navbar .nav-link i {
+        margin-right: 6px;
+        font-size: 0.85rem;
+    }
+
+    .crs-navbar .navbar-toggler {
+        border: none;
+        padding: 8px 12px;
+        color: #fff;
+        font-size: 1.4rem;
+        line-height: 1;
+        background: transparent;
+    }
+
+    .crs-navbar .navbar-toggler:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+    .crs-desktop-nav {
+        display: none;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .crs-desktop-nav ul {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .crs-offcanvas {
+        background: linear-gradient(180deg, #2A0806 0%, #4B0E0B 100%);
+        width: 280px !important;
+    }
+
+    .crs-offcanvas .offcanvas-header {
+        background: rgba(0,0,0,0.15);
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .crs-offcanvas .offcanvas-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .crs-offcanvas .offcanvas-body {
+        padding: 12px 0;
+    }
+
+    .crs-offcanvas .offcanvas-body .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 14px 24px;
+        color: rgba(255,255,255,0.9);
+        font-size: 0.95rem;
+        margin: 2px 8px;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+    .crs-offcanvas .offcanvas-body .nav-link:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    .crs-offcanvas .offcanvas-body .nav-link i {
+        width: 20px;
+        margin-right: 12px;
+        text-align: center;
+    }
+
+    .crs-offcanvas .mobile-search {
+        padding: 16px 24px 8px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 8px;
+    }
+
+    .crs-offcanvas .mobile-search input {
+        width: 100%;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.15);
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        outline: none;
+    }
+
+    .crs-offcanvas .mobile-search input::placeholder {
+        color: rgba(255,255,255,0.5);
+    }
+
+    @media (min-width: 992px) {
+        .crs-desktop-nav {
+            display: flex;
+        }
+    }
+
+    /* Two-panel layout */
+    .login-page {
+        min-height: calc(100vh - 60px);
+        display: flex;
+        background: #f3f4f6;
+    }
+
+    .login-left {
+        flex: 0 0 40%;
+        background: linear-gradient(135deg, #1a0504 0%, #2A0806 40%, #4B0E0B 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-left::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 70%, rgba(139, 69, 19, 0.15) 0%, transparent 50%);
+    }
+
+    .login-left::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        right: -30%;
+        width: 60%;
+        height: 60%;
+        background: radial-gradient(circle, rgba(139, 69, 19, 0.1) 0%, transparent 70%);
+    }
+
+    .logo-container {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo-container img {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+    }
+
+    .quote-section {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        max-width: 340px;
+    }
+
+    .quote-section .quote-icon {
+        font-size: 2rem;
+        color: rgba(139, 69, 19, 0.5);
+        margin-bottom: 16px;
+    }
+
+    .quote-section blockquote {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.7;
+        font-style: italic;
+        margin: 0 0 20px;
+        font-weight: 300;
+    }
+
+    .quote-section .quote-author {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .brand-badge {
+        position: relative;
+        z-index: 1;
+        margin-top: 40px;
+        padding: 12px 24px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 30px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .login-right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 24px;
+    }
+
+    .login-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 460px;
+        overflow: hidden;
+    }
+
+    .login-card-header {
+        padding: 32px 32px 0;
+    }
+
+    .login-card-header h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 6px;
+    }
+
+    .login-card-header p {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .login-body {
+        padding: 28px 32px 32px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #4b5563;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper i.field-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 0.85rem;
+        pointer-events: none;
+        transition: color 0.2s;
+    }
+
+    .input-wrapper input:focus ~ i.field-icon {
+        color: #8B4513;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 11px 14px 11px 40px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: #111827;
+        background: #fafafa;
+        transition: all 0.2s ease;
+        outline: none;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+        border-color: #8B4513;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.08);
+    }
+
+    .form-group input::placeholder {
+        color: #b0b8c4;
+    }
+
+    .field-error {
+        color: #dc2626;
+        font-size: 0.75rem;
+        margin-top: 4px;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 13px;
+        background: linear-gradient(135deg, #4B0E0B 0%, #8B4513 100%);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(75, 14, 11, 0.3);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    .login-footer {
+        text-align: center;
+        padding-top: 4px;
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+
+    .login-footer a {
+        color: #8B4513;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .login-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .messages-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+    }
+
+    .messages-list li {
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        font-size: 0.82rem;
+    }
+
+    .messages-list li.error {
+        color: #991b1b;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+    }
+
+    .messages-list li.success {
+        color: #166534;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+        .login-page {
+            flex-direction: column;
+        }
+
+        .login-left {
+            flex: none;
+            padding: 40px 24px 30px;
+        }
+
+        .logo-container img {
+            width: 140px;
+            height: 140px;
+        }
+
+        .quote-section blockquote {
+            font-size: 1rem;
+        }
+
+        .brand-badge {
+            margin-top: 24px;
+        }
+
+        .login-right {
+            padding: 24px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .login-left {
+            padding: 30px 20px 24px;
+        }
+
+        .logo-container img {
+            width: 110px;
+            height: 110px;
+        }
+
+        .login-body {
+            padding: 20px;
+        }
+
+        .login-card-header {
+            padding: 24px 20px 0;
+        }
+    }
+</style>
+{% endblock extrastyle %}
+
+{% block content_title %}{% endblock content_title %}
+{% block breadcrumbs %}{% endblock breadcrumbs %}
+
+{% block content %}
+<!-- Navbar -->
+<nav class="crs-navbar">
+    <div class="container-xl px-3 px-lg-4">
+        <a class="navbar-brand" href="{% url 'report:home_page' %}">
+            <i class="fas fa-shield-alt"></i>
+            <div>
+                CRS
+                <span>Crime Reporting System</span>
+            </div>
+        </a>
+
+        <div class="crs-desktop-nav">
+            <ul>
+                <li>
+                    <a class="nav-link" href="{% url 'report:home_page' %}">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{% url 'report:report' %}">
+                        <i class="fas fa-plus-circle"></i> Report Crime
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{% url 'report:contact-details' %}">
+                        <i class="fas fa-file-alt"></i> My Reports
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link active" href="{% url 'admin:login' %}">
+                        <i class="fas fa-user-shield"></i> Police Login
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{% url 'ums:register' %}">
+                        <i class="fas fa-user-plus"></i> Police Signup
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#crsMobileMenu" aria-controls="crsMobileMenu" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="offcanvas crs-offcanvas offcanvas-start" tabindex="-1" id="crsMobileMenu" aria-labelledby="crsMobileMenuLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title text-white" id="crsMobileMenuLabel">
+                    <i class="fas fa-shield-alt me-2"></i> Menu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <a class="nav-link" href="{% url 'report:home_page' %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a class="nav-link" href="{% url 'report:report' %}">
+                    <i class="fas fa-plus-circle"></i> Report Crime
+                </a>
+                <a class="nav-link" href="{% url 'report:contact-details' %}">
+                    <i class="fas fa-file-alt"></i> My Reports
+                </a>
+                <a class="nav-link active" href="{% url 'admin:login' %}">
+                    <i class="fas fa-user-shield"></i> Police Login
+                </a>
+                <a class="nav-link" href="{% url 'ums:register' %}">
+                    <i class="fas fa-user-plus"></i> Police Signup
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Two-panel login -->
+<div class="login-page">
+    <div class="login-left">
+        <div class="logo-container">
+            <img src="{% static 'image/title.jpeg' %}" alt="CRS Logo">
+        </div>
+        <div class="quote-section">
+            <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+            <blockquote>
+                The protectors of the people deserve the trust of the people. Log in to serve justice.
+            </blockquote>
+            <div class="quote-author">Police Motto</div>
+        </div>
+        <div class="brand-badge">
+            <i class="fas fa-shield-halved"></i> Crime Reporting System
+        </div>
+    </div>
+
+    <div class="login-right">
+        <div class="login-card">
+            <div class="login-card-header">
+                <h2><i class="fas fa-user-shield" style="color: #8B4513;"></i> Police Portal</h2>
+                <p>Enter your credentials to access the admin panel</p>
+            </div>
+
+            <div class="login-body">
+                {% if form.errors and not form.non_field_errors %}
+                <ul class="messages-list">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                        <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% if form.non_field_errors %}
+                <ul class="messages-list">
+                    {% for error in form.non_field_errors %}
+                    <li class="error">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <div class="errornote">
+                    You are authenticated as {{ username }}. Are you sure you want to log out?
+                </div>
+                {% endif %}
+
+                <form method="POST" id="login-form" novalidate>
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="id_username">Username</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="username" id="id_username" placeholder="Enter your username" autofocus required>
+                            <i class="fas fa-user field-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" name="password" id="id_password" placeholder="Enter your password" required>
+                            <i class="fas fa-lock field-icon"></i>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+
+                <div class="login-footer" style="margin-top: 20px;">
+                    <a href="{% url 'report:home_page' %}"><i class="fas fa-arrow-left"></i> Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock content %}

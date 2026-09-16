@@ -1,253 +1,608 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <link rel="stylesheet" href="{% static 'css/bs_icon.css' %}">
-  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css" />
-  <style>
-    .error-message {
-        color: #ff3860;
-        font-size: 12px;
-        margin-top: 5px;
-        display: none;
+
+{% block stylesheet %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    .register-page {
+        min-height: calc(100vh - 60px);
+        display: flex;
+        background: #f3f4f6;
     }
-    .success-message {
-        color: #4CAF50;
-        font-size: 12px;
-        margin-top: 5px;
-        display: none;
-    }
-    .input_box {
+
+    /* Left Panel */
+    .register-left {
+        flex: 1;
+        background: linear-gradient(135deg, #1a0504 0%, #2A0806 40%, #4B0E0B 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 40px;
         position: relative;
-        margin-bottom: 15px;
+        overflow: hidden;
     }
-    .password-mismatch {
-        border: 1px solid #ff3860 !important;
-    }
-    .flash {
-        cursor: pointer;
+
+    .register-left::before {
+        content: '';
         position: absolute;
-        right: 35px;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 70%, rgba(139, 69, 19, 0.15) 0%, transparent 50%);
+    }
+
+    .register-left::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        right: -30%;
+        width: 60%;
+        height: 60%;
+        background: radial-gradient(circle, rgba(139, 69, 19, 0.1) 0%, transparent 70%);
+    }
+
+    .logo-container {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo-container img {
+        width: 200px;
+        height: 200px;
+        object-fit: contain;
+        filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+    }
+
+    .quote-section {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        max-width: 360px;
+    }
+
+    .quote-section .quote-icon {
+        font-size: 2rem;
+        color: rgba(139, 69, 19, 0.5);
+        margin-bottom: 16px;
+    }
+
+    .quote-section blockquote {
+        font-size: 1.15rem;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.7;
+        font-style: italic;
+        margin: 0 0 20px;
+        font-weight: 300;
+    }
+
+    .quote-section .quote-author {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .brand-badge {
+        position: relative;
+        z-index: 1;
+        margin-top: 40px;
+        padding: 12px 24px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 30px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    /* Right Panel */
+    .register-right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 24px;
+    }
+
+    .register-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 460px;
+        overflow: hidden;
+    }
+
+    .register-card-header {
+        padding: 32px 32px 0;
+    }
+
+    .register-card-header h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 6px;
+    }
+
+    .register-card-header p {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .register-body {
+        padding: 28px 32px 32px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #4b5563;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper i.field-icon {
+        position: absolute;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 0.85rem;
+        pointer-events: none;
+        transition: color 0.2s;
     }
-    .input_box input {
+
+    .input-wrapper input:focus ~ i.field-icon,
+    .input-wrapper select:focus ~ i.field-icon {
+        color: #8B4513;
+    }
+
+    .form-group input,
+    .form-group select {
         width: 100%;
-        padding-right: 60px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        padding: 11px 14px 11px 40px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: #111827;
+        background: #fafafa;
+        transition: all 0.2s ease;
+        outline: none;
+        font-family: inherit;
     }
-    .messages {
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #8B4513;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.08);
+    }
+
+    .form-group input::placeholder {
+        color: #b0b8c4;
+    }
+
+    .form-group select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 40px;
+        cursor: pointer;
+    }
+
+    .password-wrapper {
+        position: relative;
+    }
+
+    .password-wrapper input {
+        padding-right: 44px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #9ca3af;
+        font-size: 0.95rem;
+        transition: color 0.2s;
+        background: none;
+        border: none;
+        padding: 4px;
+    }
+
+    .password-toggle:hover {
+        color: #4B0E0B;
+    }
+
+    .field-error {
+        color: #dc2626;
+        font-size: 0.75rem;
+        margin-top: 4px;
+    }
+
+    .field-success {
+        color: #16a34a;
+        font-size: 0.75rem;
+        margin-top: 4px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .strength-bar {
+        height: 3px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        margin-top: 6px;
+        overflow: hidden;
+    }
+
+    .strength-bar-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-register {
+        width: 100%;
+        padding: 13px;
+        background: linear-gradient(135deg, #4B0E0B 0%, #8B4513 100%);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(75, 14, 11, 0.3);
+    }
+
+    .register-footer {
+        text-align: center;
+        padding-top: 4px;
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+
+    .register-footer a {
+        color: #8B4513;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .register-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .messages-list {
         list-style: none;
         padding: 0;
-        margin-bottom: 20px;
+        margin: 0 0 16px;
     }
-    .messages li.error {
-        color: #ff3860;
-        padding: 10px;
-        background: #ffebee;
-        border-radius: 4px;
-        margin-bottom: 10px;
+
+    .messages-list li {
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        font-size: 0.82rem;
     }
-  </style>
-</head>
 
-<body>
-  <div class="container">
-    <div class="forms">
-      <div class="form_login">
-        <span class="Title">Register</span>
+    .messages-list li.error {
+        color: #991b1b;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+    }
 
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+    .messages-list li.success {
+        color: #166534;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+    }
 
-        <form method="POST" id="registerForm" novalidate>
-          {% csrf_token %}
+    /* Responsive */
+    @media (max-width: 991px) {
+        .register-page {
+            flex-direction: column;
+        }
 
-          <div class="input_box">
-            {{ form.first_name }}
-            {% for error in form.first_name.errors %}
-              <div class="error-message" style="display: block;">{{ error }}</div>
-            {% endfor %}
-            {% comment %} <i class="uil uil-user"></i> {% endcomment %}
-          </div>
+        .register-left {
+            padding: 40px 24px 30px;
+        }
 
-          <div class="input_box">
-            {{ form.middle_name }}
-            {% for error in form.middle_name.errors %}
-              <div class="error-message" style="display: block;">{{ error }}</div>
-            {% endfor %}
-            {% comment %} <i class="uil uil-user"></i> {% endcomment %}
-          </div>
+        .logo-container img {
+            width: 140px;
+            height: 140px;
+        }
 
-          <div class="input_box">
-            {{ form.last_name }}
-            {% for error in form.last_name.errors %}
-              <div class="error-message" style="display: block;">{{ error }}</div>
-            {% endfor %}
-            {% comment %} <i class="uil uil-user"></i> {% endcomment %}
-          </div>
+        .quote-section blockquote {
+            font-size: 1rem;
+        }
 
-          <div class="input_box">
-            {{ form.email }}
-            {% for error in form.email.errors %}
-              <div class="error-message" style="display: block;">{{ error }}</div>
-            {% endfor %}
-            {% comment %} <i class="uil uil-envelope-alt"></i> {% endcomment %}
-          </div>
+        .brand-badge {
+            margin-top: 24px;
+        }
 
+        .register-right {
+            padding: 24px;
+        }
+    }
 
-          <div class="input_box">
-            {{ form.password1 }}
-            {% for error in form.password1.errors %}
-              <div class="error-message" style="display: block;">{{ error }}</div>
-            {% endfor %}
-            {% comment %} <i class="uil uil-padlock icon"></i> {% endcomment %}
-            <i class="uil uil-eye-slash flash" onclick="togglePassword('id_password1', 'eye-pass1')" id="eye-pass1"></i>
-            <div class="error-message" id="password1-error"></div>
-            <div class="success-message" id="password1-success"></div>
-          </div>
+    @media (max-width: 480px) {
+        .register-left {
+            padding: 30px 20px 24px;
+        }
 
-          <div class="input_box">
-            {{ form.password2 }}
-            {% for error in form.password2.errors %}
-              <div class="error-message" style="display: block;">{{ error }}</div>
-            {% endfor %}
-            {% comment %} <i class="uil uil-padlock icon"></i> {% endcomment %}
-            <i class="uil uil-eye-slash flash" onclick="togglePassword('id_password2', 'eye-pass2')" id="eye-pass2"></i>
-            <div class="error-message" id="password2-error"></div>
-            <div class="success-message" id="password2-success"></div>
-          </div>
+        .logo-container img {
+            width: 110px;
+            height: 110px;
+        }
 
+        .quote-section blockquote {
+            font-size: 0.9rem;
+        }
 
-          <div class="input_box">
-            {{ form.police_station }}
-            {% for error in form.police_station.errors %}
-              <div class="error-message" style="display: block;">{{ error }}</div>
-            {% endfor %}
-            {% comment %} <i class="uil uil-envelope-alt"></i> {% endcomment %}
-          </div>
+        .register-body {
+            padding: 20px;
+        }
 
-          <div class="inbox_button">
-            <input type="submit" value="Register">
-          </div>
-        </form>
+        .register-card-header {
+            padding: 24px 20px 0;
+        }
 
-        <div class="Register_box">
-          <span class="reg">Already have account? <a href="{% url 'admin:login' %}" class="Register">Login now.</a></span>
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock stylesheet %}
+
+{% block main %}
+<div class="register-page">
+    <div class="register-left">
+        <div class="logo-container">
+            <img src="{% static 'image/title.jpeg' %}" alt="CRS Logo">
         </div>
-      </div>
+        <div class="quote-section">
+            <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+            <blockquote>
+                The world is a dangerous place, not because of those who do evil, but because of those who look on and do nothing.
+            </blockquote>
+            <div class="quote-author">Albert Einstein</div>
+        </div>
+        <div class="brand-badge">
+            <i class="fas fa-shield-halved"></i> Crime Reporting System
+        </div>
     </div>
-  </div>
 
-  <script>
-    function togglePassword(inputId, eyeId) {
+    <div class="register-right">
+        <div class="register-card">
+            <div class="register-card-header">
+                <h2>Create Account</h2>
+                <p>Register as a Police Officer</p>
+            </div>
+
+            <div class="register-body">
+                {% if messages %}
+                <ul class="messages-list">
+                    {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                <form method="POST" id="registerForm" novalidate>
+                    {% csrf_token %}
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="id_first_name">First Name</label>
+                            <div class="input-wrapper">
+                                {{ form.first_name }}
+                                <i class="fas fa-user field-icon"></i>
+                            </div>
+                            {% for error in form.first_name.errors %}
+                                <div class="field-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_middle_name">Middle Name</label>
+                            <div class="input-wrapper">
+                                {{ form.middle_name }}
+                                <i class="fas fa-user field-icon"></i>
+                            </div>
+                            {% for error in form.middle_name.errors %}
+                                <div class="field-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_last_name">Last Name</label>
+                        <div class="input-wrapper">
+                            {{ form.last_name }}
+                            <i class="fas fa-user field-icon"></i>
+                        </div>
+                        {% for error in form.last_name.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_email">Email Address</label>
+                        <div class="input-wrapper">
+                            {{ form.email }}
+                            <i class="fas fa-envelope field-icon"></i>
+                        </div>
+                        {% for error in form.email.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password1">Password</label>
+                        <div class="input-wrapper password-wrapper">
+                            {{ form.password1 }}
+                            <i class="fas fa-lock field-icon"></i>
+                            <button type="button" class="password-toggle" onclick="togglePassword('id_password1', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        {% for error in form.password1.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                        <div class="field-error" id="password1-error"></div>
+                        <div class="field-success" id="password1-success"></div>
+                        <div class="strength-bar"><div class="strength-bar-fill" id="strengthBar"></div></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password2">Confirm Password</label>
+                        <div class="input-wrapper password-wrapper">
+                            {{ form.password2 }}
+                            <i class="fas fa-lock field-icon"></i>
+                            <button type="button" class="password-toggle" onclick="togglePassword('id_password2', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        {% for error in form.password2.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                        <div class="field-error" id="password2-error"></div>
+                        <div class="field-success" id="password2-success"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_police_station">Police Station</label>
+                        <div class="input-wrapper">
+                            {{ form.police_station }}
+                            <i class="fas fa-building field-icon"></i>
+                        </div>
+                        {% for error in form.police_station.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </form>
+
+                <div class="register-footer" style="margin-top: 20px;">
+                    Already have an account? <a href="{% url 'admin:login' %}">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}
+
+{% block script %}
+<script>
+    function togglePassword(inputId, btn) {
         const input = document.getElementById(inputId);
-        const eye = document.getElementById(eyeId);
-        if (input.type === "password") {
-            input.type = "text";
-            eye.className = "uil uil-eye flash";
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
         } else {
-            input.type = "password";
-            eye.className = "uil uil-eye-slash flash";
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
         }
     }
 
     function validatePasswords() {
-        const password1 = document.getElementById('id_password1').value;
-        const password2 = document.getElementById('id_password2').value;
+        const p1 = document.getElementById('id_password1').value;
+        const p2 = document.getElementById('id_password2').value;
+        const p1Err = document.getElementById('password1-error');
+        const p1Ok = document.getElementById('password1-success');
+        const p2Err = document.getElementById('password2-error');
+        const p2Ok = document.getElementById('password2-success');
+        const bar = document.getElementById('strengthBar');
 
-        const password1Error = document.getElementById('password1-error');
-        const password1Success = document.getElementById('password1-success');
+        p1Err.textContent = ''; p1Ok.textContent = '';
+        p2Err.textContent = ''; p2Ok.textContent = '';
 
-        if (password1.length > 0) {
-            if (password1.length < 8) {
-                password1Error.textContent = "Password must be at least 8 characters";
-                password1Error.style.display = 'block';
-                password1Success.style.display = 'none';
-                document.getElementById('id_password1').classList.add('password-mismatch');
+        if (p1.length > 0) {
+            if (p1.length < 8) {
+                p1Err.textContent = 'Minimum 8 characters required';
+                bar.style.width = '25%';
+                bar.style.background = '#dc2626';
             } else {
-                password1Error.style.display = 'none';
-                password1Success.textContent = "Password strength: " + checkPasswordStrength(password1);
-                password1Success.style.display = 'block';
-                document.getElementById('id_password1').classList.remove('password-mismatch');
+                let s = 0;
+                if (p1.length >= 8) s++;
+                if (/[a-z]/.test(p1) && /[A-Z]/.test(p1)) s++;
+                if (/\d/.test(p1)) s++;
+                if (/[^a-zA-Z\d]/.test(p1)) s++;
+                const colors = ['#dc2626', '#f59e0b', '#eab308', '#22c55e', '#16a34a'];
+                const labels = ['Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+                const pct = [25, 50, 70, 90, 100];
+                bar.style.width = pct[s] + '%';
+                bar.style.background = colors[s];
+                p1Ok.textContent = labels[s];
             }
         } else {
-            password1Error.style.display = 'none';
-            password1Success.style.display = 'none';
-            document.getElementById('id_password1').classList.remove('password-mismatch');
+            bar.style.width = '0%';
         }
 
-        const password2Error = document.getElementById('password2-error');
-        const password2Success = document.getElementById('password2-success');
-
-        if (password2.length > 0) {
-            if (password1 !== password2) {
-                password2Error.textContent = "Passwords do not match";
-                password2Error.style.display = 'block';
-                password2Success.style.display = 'none';
-                document.getElementById('id_password2').classList.add('password-mismatch');
-            } else if (password1.length >= 8) {
-                password2Error.style.display = 'none';
-                password2Success.textContent = "Passwords match!";
-                password2Success.style.display = 'block';
-                document.getElementById('id_password2').classList.remove('password-mismatch');
+        if (p2.length > 0) {
+            if (p1 !== p2) {
+                p2Err.textContent = 'Passwords do not match';
+            } else if (p1.length >= 8) {
+                p2Ok.textContent = 'Passwords match';
             }
-        } else {
-            password2Error.style.display = 'none';
-            password2Success.style.display = 'none';
-            document.getElementById('id_password2').classList.remove('password-mismatch');
         }
     }
 
-    function checkPasswordStrength(password) {
-        let strength = 0;
-        if (password.length >= 8) strength++;
-        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
-        if (password.match(/\d/)) strength++;
-        if (password.match(/[^a-zA-Z\d]/)) strength++;
-        
-        const strengthText = ["Weak", "Fair", "Good", "Strong", "Very Strong"];
-        return strengthText[Math.min(strength, 4)];
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('id_password1').addEventListener('input', validatePasswords);
         document.getElementById('id_password2').addEventListener('input', validatePasswords);
-        
-        // Show backend errors for password fields
-        {% if form.password1.errors or form.password2.errors %}
-            validatePasswords();
-        {% endif %}
-    });
 
-    // Form submission validation
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        const password1 = document.getElementById('id_password1').value;
-        const password2 = document.getElementById('id_password2').value;
-        
-        if (password1.length < 8) {
-            e.preventDefault();
-            document.getElementById('password1-error').textContent = "Password must be at least 8 characters";
-            document.getElementById('password1-error').style.display = 'block';
-            document.getElementById('id_password1').focus();
-            return;
-        }
-        
-        if (password1 !== password2) {
-            e.preventDefault();
-            document.getElementById('password2-error').textContent = "Passwords do not match";
-            document.getElementById('password2-error').style.display = 'block';
-            document.getElementById('id_password2').focus();
-            return;
-        }
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const p1 = document.getElementById('id_password1').value;
+            const p2 = document.getElementById('id_password2').value;
+            if (p1.length < 8) {
+                e.preventDefault();
+                document.getElementById('password1-error').textContent = 'Minimum 8 characters required';
+                document.getElementById('id_password1').focus();
+                return;
+            }
+            if (p1 !== p2) {
+                e.preventDefault();
+                document.getElementById('password2-error').textContent = 'Passwords do not match';
+                document.getElementById('id_password2').focus();
+            }
+        });
     });
-  </script>
-</body>
-</html>
+</script>
+{% endblock script %}

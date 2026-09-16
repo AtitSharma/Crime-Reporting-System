@@ -1,398 +1,135 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Arial, sans-serif;
-    }
-    
-    .posts-container {
-        max-width: 500px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #f0f2f5;
-    }
-    
-    .facebook-post {
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-        position: relative;
-    }
-    
-    .post-header {
-        display: flex;
-        align-items: center;
-        padding: 12px 16px;
-        position: relative;
-    }
-    
-    .profile-pic {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 12px;
-        object-fit: cover;
-    }
-    
-    .user-info {
-        flex-grow: 1;
-    }
-    
-    .user-name {
-        font-weight: 600;
-        font-size: 15px;
-        color: #050505;
-        margin-bottom: 2px;
-    }
-    
-    .post-time {
-        font-size: 13px;
-        color: #65676B;
-        display: flex;
-        align-items: center;
-    }
-    
-    .post-time i {
-        margin-left: 4px;
-        font-size: 12px;
-    }
-    
-    .post-options {
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        cursor: pointer;
-        color: #65676B;
-        position: relative;
-    }
-    
-    .post-options:hover {
-        background-color: #f0f2f5;
-    }
-    
-    .options-dropdown {
-        position: absolute;
-        right: 0;
-        top: 40px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 200px;
-        z-index: 100;
-        display: none;
-    }
-    
-    .options-dropdown.show {
-        display: block;
-    }
-    
-    .dropdown-item {
-        padding: 12px 16px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-    }
-    
-    .dropdown-item:hover {
-        background-color: #f0f2f5;
-    }
-    
-    .dropdown-item i {
-        margin-right: 10px;
-        width: 20px;
-        text-align: center;
-    }
-    
-    .post-content {
-        padding: 0 16px 12px;
-    }
-    
-    .post-text {
-        font-size: 15px;
-        line-height: 1.4;
-        color: #050505;
-        margin-bottom: 10px;
-    }
-    
-    .post-image {
-        width: 100%;
-        border-radius: 8px;
-        margin-bottom: 8px;
-    }
-    
-    .post-stats {
-        display: flex;
-        align-items: center;
-        padding: 10px 16px;
-        border-top: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
-        color: #65676B;
-        font-size: 15px;
-    }
-    
-    .likes-count {
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-    }
-    
-    .likes-count i {
-        color: #1877F2;
-        margin-right: 6px;
-        font-size: 18px;
-    }
-    
-    .comments-shares {
-        display: flex;
-    }
-    
-    .comments-shares span {
-        margin-left: 20px;
-    }
-    
-    .post-actions {
-        display: flex;
-        padding: 4px 0;
-    }
-    
-    .action-button {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 0;
-        margin: 0 4px;
-        border-radius: 4px;
-        cursor: pointer;
-        color: #65676B;
-        font-weight: 600;
-        font-size: 15px;
-    }
-    
-    .action-button:hover {
-        background-color: #f0f2f5;
-    }
-    
-    .action-button i {
-        margin-right: 8px;
-        font-size: 18px;
-    }
 
-        .facebook-post {
-            /* Your existing styles */
-            margin-bottom: 20px;
-        }
-        
-        .status-badge {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-        
-        .status-pending {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-        
-        .status-investigating {
-            background-color: #dbeafe;
-            color: #1e40af;
-        }
-        
-        .status-action_taken {
-            background-color: #dcfce7;
-            color: #166534;
-        }
-        
-        .status-rejected {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-        
-        .post-meta, .post-attachment {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #4b5563;
-            font-size: 14px;
-            margin: 8px 0;
-        }
-        
-        .post-meta i, .post-attachment i {
-            width: 16px;
-            text-align: center;
-        }
-        
-        .post-attachment a {
-            color: #3b82f6;
-            text-decoration: none;
-        }
-        
-        .post-attachment a:hover {
-            text-decoration: underline;
-        }
-        
-        .post-response {
-            background-color: #f8fafc;
-            border-left: 3px solid #3b82f6;
-            padding: 10px 15px;
-            margin-top: 15px;
-            border-radius: 0 4px 4px 0;
-        }
-        
-        .response-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #1e40af;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-</style>
-
-<div class="posts-container">
-    {% for report in crime_reports %}
-    <div class="facebook-post">
-        <div class="post-header">
-            <div class="user-info">
-                <div class="user-name">{{ report.name |default:report.name }}</div>
-                <div class="user-name">{{ report.email |default:report.email }}</div>
-                <div class="post-time">
-                    {{ report.created_at }} 
-                    {% if report.is_private %}
-                        <i class="fas fa-lock" title="Private Report"></i>
-                    {% else %}
-                        <i class="fas fa-globe-americas" title="Public Report"></i>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="post-options" id="postOptions{{ report.id }}">
-                <i class="fas fa-ellipsis-h"></i>
-                <div class="options-dropdown" id="optionsDropdown{{ report.id }}">
-                    <div class="dropdown-item">
-                        <i class="fas fa-pencil-alt"></i>
-                        <span>Update</span>
-                    </div>
-                    <div class="dropdown-item">
-                        <i class="fas fa-trash"></i>
-                        <span>Delete</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="post-content">
-            <p class="post-text">
-                <b>{{ report.title }}</b>
-                <span class="status-badge status-{{ report.status|lower }}">{{ report.get_status_display }}</span>
-            </p>
-            
-            <p class="post-text">{{ report.description }}</p>
-            
-            {% if report.crime_datetime %}
-            <div class="post-meta">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Incident Date: {{ report.crime_datetime }}</span>
-            </div>
-            {% endif %}
-            
-            {% if report.proof_documents %}
-            <div class="post-attachment">
-                <i class="fas fa-file-alt"></i>
-                <a href="{{ report.proof_documents.url }}" target="_blank">View Proof Document</a>
-            </div>
-            {% endif %}
-            
-            {% if report.report_taken_by_station %}
-            <div class="post-meta">
-                <i class="fas fa-building"></i>
-                <span>Police Station: {{ report.report_taken_by_station.name }}</span>
-            </div>
-            {% endif %}
-            
-            {% if report.action_taken_by %}
-            <div class="post-meta">
-                <i class="fas fa-user-shield"></i>
-                <span>Action by: {{ report.action_taken_by.get_full_name|default:report.action_taken_by.username }}</span>
-            </div>
-            {% endif %}
-            
-            {% if report.explanation %}
-            <div class="post-response">
-                <div class="response-header">
-                    <i class="fas fa-comment-dots"></i>
-                    <span>Official Response</span>
-                </div>
-                <p>{{ report.explanation }}</p>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-    {% endfor %}
-</div>
-
-
-
-
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1><i class="fas fa-shield-alt"></i> Crime Reporting System</h1>
+        <p>Report crimes, track investigations, and help make your community safer. Your report matters — every voice counts.</p>
+        <a href="{% url 'report:report' %}" class="hero-btn">
+            <i class="fas fa-plus-circle"></i> Report a Crime
+        </a>
+    </div>
+</section>
+
+<!-- Posts Section -->
+<div class="home-container">
+    <div class="posts-wrapper">
+        <div class="section-title">
+            <i class="fas fa-list-ul"></i> Recent Reports
+        </div>
+
+        {% for report in crime_reports %}
+        <div class="post-card">
+            <div class="post-header">
+                <div class="post-avatar">
+                    {{ report.name|first|default:"?"|upper }}
+                </div>
+                <div class="post-user-info">
+                    <div class="post-user-name">{{ report.name|default:"Anonymous" }}</div>
+                    <div class="post-time">
+                        {{ report.created_at }}
+                        {% if report.is_private %}
+                            <i class="fas fa-lock" title="Private Report"></i>
+                        {% else %}
+                            <i class="fas fa-globe-americas" title="Public Report"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="post-options">
+                    <button class="options-btn" id="postOptions{{ report.id }}">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <div class="options-dropdown" id="optionsDropdown{{ report.id }}">
+                        <div class="dropdown-item" onclick="window.location.href='{% url 'report:report-detail-update' report.id %}'">
+                            <i class="fas fa-pencil-alt"></i> Update
+                        </div>
+                        <div class="dropdown-item delete" onclick="window.location.href='{% url 'report:report-detail' report.id %}'">
+                            <i class="fas fa-trash"></i> Delete
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="post-content">
+                <div class="post-title-row">
+                    <span class="post-title">{{ report.title }}</span>
+                    <span class="status-badge status-{{ report.status|lower }}">{{ report.get_status_display }}</span>
+                </div>
+
+                <p class="post-description">{{ report.description }}</p>
+
+                {% if report.crime_datetime %}
+                <div class="post-meta">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>{{ report.crime_datetime }}</span>
+                </div>
+                {% endif %}
+
+                {% if report.proof_documents %}
+                <div class="post-attachment">
+                    <a href="{{ report.proof_documents.url }}" target="_blank">
+                        <i class="fas fa-file-alt"></i> View Proof Document
+                    </a>
+                </div>
+                {% endif %}
+
+                {% if report.report_taken_by_station %}
+                <div class="post-meta">
+                    <i class="fas fa-building"></i>
+                    <span>{{ report.report_taken_by_station.name }}</span>
+                </div>
+                {% endif %}
+
+                {% if report.action_taken_by %}
+                <div class="post-meta">
+                    <i class="fas fa-user-shield"></i>
+                    <span>{{ report.action_taken_by.get_full_name|default:report.action_taken_by.username }}</span>
+                </div>
+                {% endif %}
+
+                {% if report.explanation %}
+                <div class="post-response">
+                    <div class="response-header">
+                        <i class="fas fa-comment-dots"></i> Official Response
+                    </div>
+                    <p>{{ report.explanation }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>No Reports Yet</h3>
+            <p>Be the first to report an incident in your community.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize dropdown functionality for all posts
-        document.querySelectorAll('.post-options').forEach(optionsBtn => {
-            const dropdownId = optionsBtn.id.replace('postOptions', 'optionsDropdown');
-            const dropdown = document.getElementById(dropdownId);
-            const reportId = optionsBtn.id.replace('postOptions', '');
-            
-            optionsBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                // Close all other dropdowns first
-                document.querySelectorAll('.options-dropdown').forEach(dd => {
-                    if(dd !== dropdown) dd.classList.remove('show');
-                });
-                dropdown.classList.toggle('show');
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.options-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var dropdown = this.nextElementSibling;
+            document.querySelectorAll('.options-dropdown').forEach(function(dd) {
+                if (dd !== dropdown) dd.classList.remove('show');
             });
-            
-            // Add click handlers for dropdown items
-            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const action = this.textContent.trim();
-                    if(action === 'Delete') {
-                        // Redirect to delete view with report ID
-                        window.location.href = `/reports/delete/${reportId}/`;
-                    } else if(action === 'Update') {
-                        // Redirect to update view with report ID
-                        window.location.href = `/reports/update/${reportId}/`;
-                    }
-                    dropdown.classList.remove('show');
-                });
-            });
-        });
-        
-        // Close dropdowns when clicking anywhere else
-        document.addEventListener('click', function() {
-            document.querySelectorAll('.options-dropdown').forEach(dropdown => {
-                dropdown.classList.remove('show');
-            });
-        });
-        
-        // Prevent dropdown from closing when clicking inside it
-        document.querySelectorAll('.options-dropdown').forEach(dropdown => {
-            dropdown.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
+            dropdown.classList.toggle('show');
         });
     });
+
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.options-dropdown').forEach(function(dd) {
+            dd.classList.remove('show');
+        });
+    });
+});
 </script>
 {% endblock content %}

@@ -48,6 +48,21 @@ class ReportCreationForm(forms.ModelForm):
         self.fields['description'].required = True
         self.fields['crime_datetime'].required = True
 
+        self.fields['name'].widget.attrs.update({
+            'placeholder': 'Enter your full name'
+        })
+        self.fields['email'].widget.attrs.update({
+            'placeholder': 'Enter your email address'
+        })
+        self.fields['phone_number'].widget.attrs.update({
+            'placeholder': 'Enter your phone number'
+        })
+        self.fields['title'].widget.attrs.update({
+            'placeholder': 'e.g., Theft at Main Street'
+        })
+        self.fields['description'].widget.attrs.update({
+            'placeholder': 'Provide detailed information about the incident...'
+        })
 
         self.fields['name'].label = self.fields['name'].label or "Name"
         self.fields['name'].label += " *"
@@ -130,5 +145,9 @@ class ReportUpdateForm(forms.ModelForm):
 
 
 class ContactDetailForm(forms.Form):
-    email = forms.EmailField()
-    phone_number = forms.CharField()
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+        'placeholder': 'Enter your email address'
+    }))
+    phone_number = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder': 'Enter your phone number'
+    }))

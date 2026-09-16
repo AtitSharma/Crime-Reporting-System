@@ -1,73 +1,279 @@
 {% load static %}
-<section id="header">
-    <nav class="navbar navbar-expand-lg navbar-light w-100">
-       <div class="container-xl">
-          <a class="d-flex p-2" href="index.html">
-              <b class="fs-4 col_orange ps-1 align-middle"> <i class="fa fa-newspaper text-white me-1"></i> Crime Reporting System</b>
-          </a>
-          <button class="navbar-toggler offcanvas-nav-btn  ms-auto me-3" type="button">
-             <img src="{% static 'image/icons-svg/list.svg' %}" width="40" height="40" alt="Open TemplateOnweb website menu"/>
-          </button>
-          <div class="offcanvas offcanvas-start offcanvas-nav" style="width: 20rem">
-             <div class="offcanvas-header shadow">
-                 <a class="d-flex p-2" href="index.html">
-                       <b class="fs-4 col_orange ps-1 align-middle"> <i class="fa fa-newspaper text-white me-1"></i>Crime Reporting System</b>
-                  </a>
-                <img src="{% static 'image/icons-svg/x.svg' %}" width="40" height="40" class="ms-auto" data-bs-dismiss="offcanvas" aria-label="Close" alt="Close TemplateOnweb website menu"/>
-                
-             </div>
-             <div class="offcanvas-body pt-0 align-items-center">
-                <ul class="navbar-nav align-items-lg-center ms-auto">
-                   <li class="nav-item"> 
-                       <a class="nav-link dropdown-toggle active" href="{% url 'report:home_page' %}" title="Visit home page">
-                       Home
-                       </a>
-                   </li>
+<style>
+    .crs-navbar {
+        background: linear-gradient(135deg, #2A0806 0%, #4B0E0B 100%);
+        padding: 0;
+        position: sticky;
+        top: 0;
+        z-index: 1030;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
 
-                   <li class="nav-item"> 
-                     <a class="nav-link dropdown-toggle" href="{% url 'report:report' %}" title="Visit home page">
-                     Register Crime
-                     </a>
-                 </li>
-                   <li class="nav-item"> 
-                       <a class="nav-link dropdown-toggle" href="{% url 'admin:login' %}" title="Visit home page">
-                       Login As Police Officer
-                       </a>
-                   </li>
-                   <li class="nav-item"> 
-                       <a class="nav-link dropdown-toggle" href="{% url 'ums:register' %}" title="Visit home page">
-                       Signup As Police Officer
-                       </a>
-                   </li>    
-                   </li>                
-                   {% comment %} <li class="nav-item"> 
-                       <a class="nav-link dropdown-toggle" href="contact.html" title="Visit home page">
-                       Contact Us
-                       </a>
-                   </li> {% endcomment %}
-                   <li class="nav-item"> 
-                    <a class="nav-link dropdown-toggle" href="{% url 'report:contact-details' %}" title="Visit home page">
-                      My reports / Complaints
+    .crs-navbar .container-xl {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .crs-navbar .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.25rem;
+        padding: 12px 0;
+        text-decoration: none;
+    }
+
+    .crs-navbar .navbar-brand:hover {
+        color: #e9d5ff;
+    }
+
+    .crs-navbar .navbar-brand i {
+        font-size: 1.4rem;
+    }
+
+    .crs-navbar .navbar-brand span {
+        font-size: 0.7rem;
+        font-weight: 400;
+        opacity: 0.8;
+        display: block;
+        line-height: 1;
+    }
+
+    .crs-navbar .nav-link {
+        color: rgba(255,255,255,0.85);
+        font-weight: 500;
+        font-size: 0.9rem;
+        padding: 10px 16px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        text-decoration: none;
+    }
+
+    .crs-navbar .nav-link:hover,
+    .crs-navbar .nav-link.active {
+        color: #fff;
+        background: rgba(255,255,255,0.12);
+    }
+
+    .crs-navbar .nav-link i {
+        margin-right: 6px;
+        font-size: 0.85rem;
+    }
+
+    .crs-navbar .navbar-toggler {
+        border: none;
+        padding: 8px 12px;
+        color: #fff;
+        font-size: 1.4rem;
+        line-height: 1;
+        background: transparent;
+    }
+
+    .crs-navbar .navbar-toggler:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+    .crs-navbar .search-form {
+        display: flex;
+        align-items: center;
+        background: rgba(255,255,255,0.12);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-left: 12px;
+    }
+
+    .crs-navbar .search-form input {
+        background: transparent;
+        border: none;
+        color: #fff;
+        padding: 8px 14px;
+        font-size: 0.85rem;
+        width: 200px;
+        outline: none;
+    }
+
+    .crs-navbar .search-form input::placeholder {
+        color: rgba(255,255,255,0.6);
+    }
+
+    .crs-navbar .search-form button {
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: #fff;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .crs-navbar .search-form button:hover {
+        background: rgba(255,255,255,0.25);
+    }
+
+    /* Desktop nav */
+    .crs-desktop-nav {
+        display: none;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .crs-desktop-nav ul {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Offcanvas mobile menu */
+    .crs-offcanvas {
+        background: linear-gradient(180deg, #2A0806 0%, #4B0E0B 100%);
+        width: 280px !important;
+    }
+
+    .crs-offcanvas .offcanvas-header {
+        background: rgba(0,0,0,0.15);
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .crs-offcanvas .offcanvas-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .crs-offcanvas .offcanvas-body {
+        padding: 12px 0;
+    }
+
+    .crs-offcanvas .offcanvas-body .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 14px 24px;
+        color: rgba(255,255,255,0.9);
+        font-size: 0.95rem;
+        margin: 2px 8px;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+    .crs-offcanvas .offcanvas-body .nav-link:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    .crs-offcanvas .offcanvas-body .nav-link i {
+        width: 20px;
+        margin-right: 12px;
+        text-align: center;
+    }
+
+    .crs-offcanvas .mobile-search {
+        padding: 16px 24px 8px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 8px;
+    }
+
+    .crs-offcanvas .mobile-search input {
+        width: 100%;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.15);
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        outline: none;
+    }
+
+    .crs-offcanvas .mobile-search input::placeholder {
+        color: rgba(255,255,255,0.5);
+    }
+
+    @media (min-width: 992px) {
+        .crs-desktop-nav {
+            display: flex;
+        }
+    }
+</style>
+
+<nav class="crs-navbar">
+    <div class="container-xl px-3 px-lg-4">
+        <a class="navbar-brand" href="{% url 'report:home_page' %}">
+            <i class="fas fa-shield-alt"></i>
+            <div>
+                CRS
+                <span>Crime Reporting System</span>
+            </div>
+        </a>
+
+        <div class="crs-desktop-nav">
+            <ul>
+                <li>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home_page' %}active{% endif %}" href="{% url 'report:home_page' %}">
+                        <i class="fas fa-home"></i> Home
                     </a>
                 </li>
-                   
-         <form class="navbar-form" role="search">
-         <div class="input-group">
-             <input type="text" class="form-control font_14" placeholder="Search Keyword">
-             <span class="input-group-btn">
-                 <button class="btn btn-primary bg_blue border-0 rounded-0 p-2 px-3" type="button">
-                     <i class="fa fa-search"></i> </button>
-             </span>
-         </div>
-         </form>
-         </ul>
-         </li>
-                  </ul>
-             </div>
-          </div>    
-          
-          
-          </div>
-       </div>
-    </nav>
- </section>
+                <li>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'report' %}active{% endif %}" href="{% url 'report:report' %}">
+                        <i class="fas fa-plus-circle"></i> Report Crime
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contact-details' %}active{% endif %}" href="{% url 'report:contact-details' %}">
+                        <i class="fas fa-file-alt"></i> My Reports
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link {% if request.resolver_match.app_name == 'admin' %}active{% endif %}" href="{% url 'admin:login' %}">
+                        <i class="fas fa-user-shield"></i> Police Login
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link {% if request.resolver_match.app_name == 'ums' %}active{% endif %}" href="{% url 'ums:register' %}">
+                        <i class="fas fa-user-plus"></i> Police Signup
+                    </a>
+                </li>
+            </ul>
+            <form class="search-form" role="search">
+                <input type="text" placeholder="Search reports...">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#crsMobileMenu" aria-controls="crsMobileMenu" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="offcanvas crs-offcanvas offcanvas-start" tabindex="-1" id="crsMobileMenu" aria-labelledby="crsMobileMenuLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title text-white" id="crsMobileMenuLabel">
+                    <i class="fas fa-shield-alt me-2"></i> Menu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <a class="nav-link {% if request.resolver_match.url_name == 'home_page' %}active{% endif %}" href="{% url 'report:home_page' %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a class="nav-link {% if request.resolver_match.url_name == 'report' %}active{% endif %}" href="{% url 'report:report' %}">
+                    <i class="fas fa-plus-circle"></i> Report Crime
+                </a>
+                <a class="nav-link {% if request.resolver_match.url_name == 'contact-details' %}active{% endif %}" href="{% url 'report:contact-details' %}">
+                    <i class="fas fa-file-alt"></i> My Reports
+                </a>
+                <a class="nav-link {% if request.resolver_match.app_name == 'admin' %}active{% endif %}" href="{% url 'admin:login' %}">
+                    <i class="fas fa-user-shield"></i> Police Login
+                </a>
+                <a class="nav-link {% if request.resolver_match.app_name == 'ums' %}active{% endif %}" href="{% url 'ums:register' %}">
+                    <i class="fas fa-user-plus"></i> Police Signup
+                </a>
+                <div class="mobile-search">
+                    <input type="text" placeholder="Search reports...">
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

@@ -156,5 +156,34 @@ ADMIN_INTERFACE_THEME = "sunrise"
 
 
 JET_THEMES = [
-    {'theme': 'default', 'color': '#4B0A56', 'title': 'Crime Theme'}
+    {'theme': 'default', 'color': '#4B0E0B', 'title': 'Crime Theme'}
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'ignore_chrome_devtools': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: '.well-known' not in record.getMessage() and '.map' not in record.getMessage() and 'chrome-devtools' not in record.getMessage(),
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'filters': ['ignore_chrome_devtools'],
+        },
+    },
+    'loggers': {
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

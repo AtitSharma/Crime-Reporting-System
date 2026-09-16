@@ -1,0 +1,508 @@
+/* ========================================
+   Home Page Styles - Modern Minimal
+   ======================================== */
+
+/* ---------- Hero Section ---------- */
+.hero {
+    background: linear-gradient(135deg, #2A0806 0%, #4B0E0B 50%, #8B4513 100%);
+    color: #fff;
+    padding: 60px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+    animation: heroFloat 15s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(20px, -20px); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.hero p {
+    font-size: 1.05rem;
+    opacity: 0.9;
+    margin-bottom: 28px;
+    line-height: 1.6;
+}
+
+.hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: #4B0E0B;
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.hero-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    color: #4B0E0B;
+}
+
+.hero-btn i {
+    font-size: 1.1rem;
+}
+
+/* ---------- Posts Container ---------- */
+.home-container {
+    background-color: #f3f4f6;
+    min-height: calc(100vh - 200px);
+    padding: 24px 16px;
+}
+
+.posts-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title i {
+    color: #4B0E0B;
+}
+
+/* ---------- Post Card ---------- */
+.post-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    margin-bottom: 16px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
+}
+
+.post-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+}
+
+/* Post Header */
+.post-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+}
+
+.post-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4B0E0B, #8B4513);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.post-user-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.post-user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.post-time {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+}
+
+.post-time i {
+    font-size: 0.7rem;
+}
+
+/* Post Options */
+.post-options {
+    position: relative;
+}
+
+.options-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #6b7280;
+    border: none;
+    background: transparent;
+    transition: background-color 0.2s;
+}
+
+.options-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.options-dropdown {
+    position: absolute;
+    right: 0;
+    top: 44px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: 180px;
+    z-index: 100;
+    display: none;
+    overflow: hidden;
+}
+
+.options-dropdown.show {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #374151;
+    transition: background-color 0.15s;
+}
+
+.dropdown-item:hover {
+    background-color: #f3f4f6;
+}
+
+.dropdown-item i {
+    width: 18px;
+    text-align: center;
+    color: #6b7280;
+}
+
+.dropdown-item.delete {
+    color: #dc2626;
+}
+
+.dropdown-item.delete i {
+    color: #dc2626;
+}
+
+/* Post Content */
+.post-content {
+    padding: 0 16px 16px;
+}
+
+.post-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.post-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.4;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-investigating {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-action_taken {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.post-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 12px;
+}
+
+/* Post Meta */
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b7280;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+}
+
+.post-meta i {
+    width: 16px;
+    text-align: center;
+    color: #9ca3af;
+}
+
+.post-attachment {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.post-attachment a {
+    color: #4B0E0B;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: #f5ebe0;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.post-attachment a:hover {
+    background: #eddcc4;
+    color: #6B2318;
+}
+
+/* Official Response */
+.post-response {
+    background-color: #faf6f1;
+    border-left: 3px solid #4B0E0B;
+    padding: 12px 16px;
+    margin-top: 12px;
+    border-radius: 0 8px 8px 0;
+}
+
+.response-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #4B0E0B;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+}
+
+.response-header i {
+    font-size: 0.8rem;
+}
+
+.post-response p {
+    font-size: 0.85rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ---------- Empty State ---------- */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: #d1d5db;
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    font-size: 1.1rem;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+}
+
+/* ========================================
+   Responsive Breakpoints
+   ======================================== */
+
+/* Mobile: < 576px */
+@media (max-width: 575px) {
+    .hero {
+        padding: 40px 16px;
+    }
+
+    .hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .hero p {
+        font-size: 0.9rem;
+        margin-bottom: 24px;
+    }
+
+    .hero-btn {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+    }
+
+    .home-container {
+        padding: 16px 12px;
+    }
+
+    .post-card {
+        border-radius: 10px;
+        margin-bottom: 12px;
+    }
+
+    .post-header {
+        padding: 12px;
+    }
+
+    .post-avatar {
+        width: 38px;
+        height: 38px;
+        font-size: 0.85rem;
+    }
+
+    .post-user-name {
+        font-size: 0.9rem;
+    }
+
+    .post-content {
+        padding: 0 12px 12px;
+    }
+
+    .post-title {
+        font-size: 0.95rem;
+    }
+
+    .post-description {
+        font-size: 0.85rem;
+    }
+
+    .status-badge {
+        font-size: 0.65rem;
+        padding: 2px 8px;
+    }
+}
+
+/* Tablet: 576px - 991px */
+@media (min-width: 576px) and (max-width: 991px) {
+    .hero {
+        padding: 50px 24px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .home-container {
+        padding: 24px 20px;
+    }
+
+    .posts-wrapper {
+        max-width: 600px;
+    }
+}
+
+/* Desktop: >= 992px */
+@media (min-width: 992px) {
+    .hero {
+        padding: 70px 24px;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+    }
+
+    .home-container {
+        padding: 32px 24px;
+    }
+
+    .posts-wrapper {
+        max-width: 720px;
+    }
+}
+
+/* Large Desktop: >= 1200px */
+@media (min-width: 1200px) {
+    .hero {
+        padding: 80px 24px;
+    }
+
+    .hero h1 {
+        font-size: 2.8rem;
+    }
+}

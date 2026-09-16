@@ -3,7 +3,7 @@ Django==5.1.7
 django-admin-interface==0.30.0
 django-colorfield==0.13.0
 django-jet @ git+https://github.com/geex-arts/django-jet.git@06ab6436d8add9aafcf771df40358409564e6bcb
-pillow==11.2.0
+pillow
 psycopg==3.2.6
 python-slugify==8.0.4
 sqlparse==0.5.3
