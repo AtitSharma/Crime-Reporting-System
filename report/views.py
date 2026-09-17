@@ -142,6 +142,7 @@ def get_filtered_queryset(request):
 
 @staff_member_required
 def analytics_api(request):
+    all_stations = list(PoliceStation.objects.all().values_list('name', flat=True))
     qs = get_filtered_queryset(request)
 
     total = qs.count()
@@ -208,6 +209,7 @@ def analytics_api(request):
         "pending": pending,
         "investigating": investigating,
         "action_taken": action_taken,
+        "all_stations": all_stations,
         "station_wise": station_data,
         "status_wise": list(status_wise),
         "time_wise": time_data,

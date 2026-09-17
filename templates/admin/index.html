@@ -6,19 +6,14 @@
 {% block extrastyle %}
 {{ block.super }}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <style>
-    html, body {
-        height: 100%;
-        overflow: hidden;
-    }
-
     #content {
         max-width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
-        height: 100vh;
-        overflow-y: auto;
     }
 
     #content h1 {
@@ -146,8 +141,7 @@
     .date-range input {
         flex: 1;
         min-width: 0;
-        position: relative;
-        z-index: 1;
+        padding: 8px 10px;
     }
 
     .date-range .date-sep {
@@ -157,6 +151,40 @@
         pointer-events: none;
         position: relative;
         z-index: 0;
+    }
+
+    /* Flatpickr overrides */
+    .flatpickr-input {
+        cursor: pointer !important;
+    }
+    .flatpickr-calendar {
+        border-radius: 8px;
+        border: 1.5px solid #e5e7eb;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+    .flatpickr-months .flatpickr-month {
+        background: #4B0E0B;
+        color: #fff;
+        border-radius: 8px 8px 0 0;
+    }
+    .flatpickr-months .flatpickr-month .flatpickr-next-month,
+    .flatpickr-months .flatpickr-month .flatpickr-prev-month {
+        color: #fff;
+        fill: #fff;
+    }
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange {
+        background: #4B0E0B;
+        border-color: #4B0E0B;
+    }
+    .flatpickr-day.today {
+        border-color: #8B4513;
+    }
+    .flatpickr-day:hover {
+        background: #f5ebe0;
+        border-color: #8B4513;
     }
 
     .filter-actions {
@@ -372,9 +400,9 @@
             <div class="filter-group date-group">
                 <label>Date Range</label>
                 <div class="date-range">
-                    <input type="date" id="filterDateFrom">
+                    <input type="text" id="filterDateFrom" placeholder="From">
                     <span class="date-sep">to</span>
-                    <input type="date" id="filterDateTo">
+                    <input type="text" id="filterDateTo" placeholder="To">
                 </div>
             </div>
             <div class="filter-group">
@@ -497,8 +525,8 @@ function buildUrl() {
 function applyFilters() { loadData(buildUrl()); }
 
 function clearFilters() {
-    document.getElementById('filterDateFrom').value = '';
-    document.getElementById('filterDateTo').value = '';
+    document.getElementById('filterDateFrom')._flatpickr.clear();
+    document.getElementById('filterDateTo')._flatpickr.clear();
     document.getElementById('filterStation').value = '';
     document.getElementById('filterStatus').value = '';
     loadData(buildUrl());
@@ -514,11 +542,11 @@ function loadData(url) {
             document.getElementById('statActionTaken').textContent = data.action_taken;
 
             var stationSelect = document.getElementById('filterStation');
-            if (stationSelect.options.length <= 1 && data.station_wise.length > 0) {
-                data.station_wise.forEach(function(s) {
+            if (stationSelect.options.length <= 1) {
+                data.all_stations.forEach(function(name) {
                     var opt = document.createElement('option');
-                    opt.value = s.name;
-                    opt.textContent = s.name;
+                    opt.value = name;
+                    opt.textContent = name;
                     stationSelect.appendChild(opt);
                 });
             }
@@ -556,6 +584,17 @@ function loadData(url) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    flatpickr('#filterDateFrom', {
+        dateFormat: 'Y-m-d',
+        maxDate: 'today',
+        onChange: function() { applyFilters(); }
+    });
+    flatpickr('#filterDateTo', {
+        dateFormat: 'Y-m-d',
+        maxDate: 'today',
+        onChange: function() { applyFilters(); }
+    });
+
     initCharts();
     loadData(buildUrl());
 });

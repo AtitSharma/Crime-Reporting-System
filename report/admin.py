@@ -32,6 +32,7 @@ class PoliceStationAdmin(admin.ModelAdmin):
     list_display = ('name', 'location',"action_buttons")
     list_filter = ('name', 'location')
     search_fields = ('name', 'location')
+    change_form_template = 'admin/report/policestation/change_form.html'
     
     def action_buttons(self, obj):
         return format_html(

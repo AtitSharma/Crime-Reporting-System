@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from user_management.models import TimeStampAbstractModel, User
 
@@ -14,8 +15,14 @@ class ActionStatus(models.TextChoices):
 class PoliceStation(TimeStampAbstractModel):
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
-    latitude = models.DecimalField(blank=True,null=True,decimal_places=4,max_digits=10)
-    longitude = models.DecimalField(blank=True,null=True,decimal_places=4,max_digits=10)
+    latitude = models.DecimalField(
+        max_digits=6, decimal_places=4, blank=True, null=True,
+        validators=[MinValueValidator(-90), MaxValueValidator(90)]
+    )
+    longitude = models.DecimalField(
+        max_digits=7, decimal_places=4, blank=True, null=True,
+        validators=[MinValueValidator(-180), MaxValueValidator(180)]
+    )
 
 
 
