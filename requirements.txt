@@ -5,6 +5,7 @@ django-colorfield==0.13.0
 django-jet @ git+https://github.com/geex-arts/django-jet.git@06ab6436d8add9aafcf771df40358409564e6bcb
 pillow
 psycopg==3.2.6
+python-decouple==3.8
 python-slugify==8.0.4
 sqlparse==0.5.3
 text-unidecode==1.3

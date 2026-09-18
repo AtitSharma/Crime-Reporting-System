@@ -202,7 +202,7 @@
 <nav class="crs-navbar">
     <div class="container-xl px-3 px-lg-4">
         <a class="navbar-brand" href="{% url 'report:home_page' %}">
-            <i class="fas fa-shield-alt"></i>
+            <img src="{% static 'image/title.jpeg' %}" alt="CRS Logo" style="height: 40px; width: auto; border-radius: 50%;">
             <div>
                 CRS
                 <span>Crime Reporting System</span>
@@ -250,7 +250,7 @@
         <div class="offcanvas crs-offcanvas offcanvas-start" tabindex="-1" id="crsMobileMenu" aria-labelledby="crsMobileMenuLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title text-white" id="crsMobileMenuLabel">
-                    <i class="fas fa-shield-alt me-2"></i> Menu
+                    <img src="{% static 'image/title.jpeg' %}" alt="CRS Logo" style="height: 28px; width: auto; border-radius: 50%; vertical-align: middle; margin-right: 8px;"> Menu
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>

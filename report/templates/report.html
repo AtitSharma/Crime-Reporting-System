@@ -563,6 +563,20 @@
 
 {% block script %}
 <script>
+    function validateName(input) {
+        const errorDiv = document.getElementById('name-error');
+        const regex = /^[A-Za-z\s'\-]+$/;
+        if (input.value && !regex.test(input.value)) {
+            errorDiv.textContent = 'Name should only contain letters, spaces, hyphens, and apostrophes';
+            errorDiv.style.display = 'block';
+            return false;
+        } else {
+            errorDiv.textContent = '';
+            errorDiv.style.display = 'none';
+            return true;
+        }
+    }
+
     window.onload = function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -575,6 +589,17 @@
             });
         } else {
             console.warn("Geolocation is not supported by this browser.");
+        }
+
+        const form = document.getElementById('reportForm');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const nameInput = document.querySelector('input[name="name"]');
+                if (nameInput && !validateName(nameInput)) {
+                    e.preventDefault();
+                    nameInput.focus();
+                }
+            });
         }
     };
 </script>
