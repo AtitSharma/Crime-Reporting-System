@@ -465,6 +465,7 @@
                             {% for error in form.name.errors %}
                                 <div class="field-error">{{ error }}</div>
                             {% endfor %}
+                            <div class="field-error" id="name-error" style="display: none;"></div>
                         </div>
                         <div class="form-group">
                             <label for="id_email">Email</label>

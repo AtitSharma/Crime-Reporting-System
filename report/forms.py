@@ -49,7 +49,10 @@ class ReportCreationForm(forms.ModelForm):
         self.fields['crime_datetime'].required = True
 
         self.fields['name'].widget.attrs.update({
-            'placeholder': 'Enter your full name'
+            'placeholder': 'Enter your full name',
+            'pattern': r"[A-Za-z\s'\-]+",
+            'title': 'Name should only contain letters, spaces, hyphens, and apostrophes',
+            'oninput': 'validateName(this)',
         })
         self.fields['email'].widget.attrs.update({
             'placeholder': 'Enter your email address'
