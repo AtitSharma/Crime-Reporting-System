@@ -186,6 +186,68 @@ Crime-Reporting-System/
 4. They can add an official explanation/response to the report
 5. The analytics dashboard provides station-wise and time-wise breakdowns
 
+## Haversine Algorithm — Auto-Assigning Nearest Police Station
+
+### Why is it used?
+
+When a citizen submits a crime report, the system needs to automatically assign it to the **nearest police station** based on the citizen's location. Instead of asking the user to manually select a station (which they may not know), the system captures their geolocation via the browser and uses the **Haversine formula** to calculate the closest station.
+
+### How does it work?
+
+The Haversine formula calculates the **great-circle distance** between two points on a sphere (Earth) given their latitude and longitude:
+
+```
+d = 2 * R * arcsin( sqrt( sin²(Δlat/2) + cos(lat1) * cos(lat2) * sin²(Δlon/2) ) )
+```
+
+Where:
+- `d` = distance between the two points (in kilometers)
+- `R` = radius of Earth (6,371 km)
+- `lat1, lon1` = coordinates of the citizen's location
+- `lat2, lon2` = coordinates of a police station
+
+**Step-by-step process:**
+
+1. Citizen opens the report form — the browser requests geolocation permission
+2. On grant, JavaScript captures `latitude` and `longitude` and stores them in hidden form fields
+3. On form submission, `nearest_police_station()` in `report/algorithms.py` is called
+4. It fetches all `PoliceStation` records from the database
+5. It runs the Haversine formula against every station to compute distances
+6. The station with the **minimum distance** is selected and assigned to the report
+
+### How it helps the system
+
+- **No manual selection needed** — citizens don't need to know which police station covers their area
+- **Automatic routing** — reports are directed to the correct station immediately
+- **Accuracy** — uses real GPS coordinates for precise distance calculation
+- **Scales well** — adding new police stations automatically includes them in the assignment logic
+
+### Implementation
+
+The algorithm lives in `report/algorithms.py`:
+
+```python
+def haversine(lat1, lon1, lat2, lon2):
+    lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a))
+    r = 6371  # Radius of Earth in kilometers
+    return c * r
+
+def nearest_police_station(user_lat, user_lon):
+    stations = PoliceStation.objects.all()
+    nearest_station = min(
+        stations,
+        key=lambda station: haversine(Decimal(user_lat), Decimal(user_lon),
+                                       station.latitude, station.longitude)
+    )
+    return nearest_station
+```
+
+Called from `ReportCreationForm.save()` in `report/forms.py` during report creation.
+
 ## Seed Data
 
 The `seed_data` management command populates the database with:
